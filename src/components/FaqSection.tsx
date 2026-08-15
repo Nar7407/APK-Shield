@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, HelpCircle, Shield, Sparkles, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LiquidText } from "./LiquidText";
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -42,9 +43,17 @@ export function FaqSection() {
             <span>Clear Answers &amp; Security Principles</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-sans">
-            Frequently Asked Questions
-          </h2>
+          <div className="my-2 max-w-3xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "Frequently Asked",
+                "Questions & Answers"
+              ]}
+              lineColors={["#ffffff", "#38bdf8"]}
+              fontSize={140}
+              className="h-28 sm:h-36 md:h-44 max-w-2xl"
+            />
+          </div>
 
           <p className="mt-4 text-base text-slate-300 leading-relaxed font-normal">
             Everything you need to know about APK Shield's analysis engine, privacy guarantees, and protection model.

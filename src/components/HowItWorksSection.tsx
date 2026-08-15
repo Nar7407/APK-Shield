@@ -9,6 +9,7 @@ import {
   Sparkles,
   MousePointerClick,
 } from "lucide-react";
+import { LiquidText } from "./LiquidText";
 
 export function HowItWorksSection() {
 
@@ -86,9 +87,17 @@ export function HowItWorksSection() {
             <span>Interactive 3D Process Engine</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
-            How APK Shield Protects You
-          </h2>
+          <div className="my-2 max-w-4xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "How APK Shield",
+                "Protects You in Real-Time"
+              ]}
+              lineColors={["#ffffff", "#38bdf8"]}
+              fontSize={135}
+              className="h-28 sm:h-36 md:h-44 max-w-3xl"
+            />
+          </div>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             Hover or slide over each card to experience how APK Shield turns complex code disassembly, VirusTotal threat telemetry, and neural AI into instant protection.

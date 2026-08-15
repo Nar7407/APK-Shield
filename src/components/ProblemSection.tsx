@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AlertOctagon, Smartphone, Link as LinkIcon, MessageSquare, KeyRound, ShieldAlert, ArrowRight, XCircle, AlertTriangle, Check, RefreshCw, Eye, Lock, ExternalLink, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
+import { LiquidText } from "./LiquidText";
 
 export function ProblemSection() {
   const [activeStep, setActiveStep] = useState(0);
@@ -77,9 +78,17 @@ export function ProblemSection() {
             <span>The Modern Mobile Threat Reality</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
-            Fake Apps and Phishing Sites Are Stealing Credentials Every Day
-          </h2>
+          <div className="my-2 max-w-4xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "Fake Apps and Phishing Sites",
+                "Are Stealing Credentials Every Day"
+              ]}
+              lineColors={["#ffffff", "#f87171"]}
+              fontSize={135}
+              className="h-28 sm:h-36 md:h-44 max-w-4xl"
+            />
+          </div>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             Cybercriminals routinely distribute weaponized Android APKs and clone websites through WhatsApp, SMS, and Telegram. Once installed, these apps steal one-time passwords (OTPs), intercept banking codes, and harvest credentials without your knowledge.

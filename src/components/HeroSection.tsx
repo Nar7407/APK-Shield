@@ -1,6 +1,7 @@
 import React from "react";
 import { Shield, ShieldAlert, Download, Sparkles, CheckCircle2, ArrowRight, Smartphone, Monitor, Lock, Activity, Eye, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import { LiquidText } from "./LiquidText";
 
 export function HeroSection() {
   const scrollToSection = (id: string) => {
@@ -40,18 +41,23 @@ export function HeroSection() {
           <span>Next-Gen Android APK &amp; Phishing Threat Detection</span>
         </motion.div>
 
-        {/* Main Headline */}
-        <motion.h1
+        {/* Main Headline with 3D Liquid Interactive Shader */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] max-w-5xl mx-auto font-sans"
+          className="max-w-5xl mx-auto flex flex-col items-center justify-center my-2"
         >
-          Stop Malicious APKs and Phishing Links{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-blue-500">
-            Before They Stop You
-          </span>
-        </motion.h1>
+          <LiquidText
+            lines={[
+              "Stop Malicious APKs and Phishing Links",
+              "Before They Stop You"
+            ]}
+            lineColors={["#ffffff", "#38bdf8"]}
+            fontSize={160}
+            className="h-32 sm:h-44 md:h-52 lg:h-60 max-w-5xl"
+          />
+        </motion.div>
 
         {/* Subheadline */}
         <motion.p

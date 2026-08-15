@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Smartphone, Monitor, Download, ShieldCheck, Check, Copy, AlertCircle, Sparkles, HardDrive, Shield, Key } from "lucide-react";
+import { LiquidText } from "./LiquidText";
 
 export function DownloadSection() {
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
@@ -26,9 +27,17 @@ export function DownloadSection() {
             <span>Official Client Releases</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
-            Get APK Shield
-          </h2>
+          <div className="my-2 max-w-3xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "Get APK Shield",
+                "For Android & Desktop"
+              ]}
+              lineColors={["#ffffff", "#38bdf8"]}
+              fontSize={140}
+              className="h-28 sm:h-36 md:h-44 max-w-2xl"
+            />
+          </div>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             Install APK Shield directly on your Android phone for continuous background app protection, or use the desktop edition to inspect packages before deployment.

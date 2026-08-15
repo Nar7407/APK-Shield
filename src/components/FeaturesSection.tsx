@@ -1,6 +1,7 @@
 import React from "react";
 import { Gauge, FileText, Layers, Database, ShieldAlert, Zap, Check, Lock, Cpu, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { LiquidText } from "./LiquidText";
 
 export function FeaturesSection() {
   const features = [
@@ -56,9 +57,17 @@ export function FeaturesSection() {
             <span>Built for Modern Android &amp; Web Threats</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
-            Comprehensive Defense Against Deceptive Apps &amp; Links
-          </h2>
+          <div className="my-2 max-w-5xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "Comprehensive Defense Against",
+                "Deceptive Apps & Links"
+              ]}
+              lineColors={["#ffffff", "#60a5fa"]}
+              fontSize={135}
+              className="h-28 sm:h-36 md:h-44 max-w-4xl"
+            />
+          </div>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             APK Shield combines advanced byte heuristics, permission dissection, and AI threat intelligence into an effortless security experience.

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Shield, ShieldAlert, ShieldCheck, Globe, Smartphone, Search, UploadCloud, RefreshCw, AlertTriangle, CheckCircle2, XCircle, FileCode, Lock, Zap, ArrowRight, Sparkles, ChevronRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LiquidText } from "./LiquidText";
 
 interface ApkSample {
   label: string;
@@ -242,9 +243,17 @@ export function LiveScannerDemo() {
             <span>Interactive Product Demonstration</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
-            Try APK Shield Live Scanner
-          </h2>
+          <div className="my-2 max-w-4xl mx-auto flex justify-center">
+            <LiquidText
+              lines={[
+                "Try APK Shield",
+                "Live Threat Scanner"
+              ]}
+              lineColors={["#ffffff", "#38bdf8"]}
+              fontSize={135}
+              className="h-28 sm:h-36 md:h-44 max-w-3xl"
+            />
+          </div>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             Experience our neural threat intelligence engine right now. Inspect sample APK packages or paste suspicious links to see real-time risk scoring in action.
