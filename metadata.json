@@ -1,0 +1,6 @@
+{
+  "name": "APK Shield",
+  "description": "Commercial-grade AI cybersecurity product that detects and analyzes malicious Android APKs and phishing links with instant risk scoring.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
