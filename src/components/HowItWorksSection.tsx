@@ -1,57 +1,91 @@
-import React from "react";
-import { UploadCloud, SearchCode, Cpu, Gauge, CheckCircle2, ShieldCheck, ShieldAlert, ArrowRight, Smartphone, Sparkles, Lock } from "lucide-react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import {
+  UploadCloud,
+  SearchCode,
+  Cpu,
+  Gauge,
+  CheckCircle2,
+  ShieldCheck,
+  ShieldAlert,
+  Sparkles,
+  MousePointerClick,
+  Info,
+} from "lucide-react";
 
 export function HowItWorksSection() {
+  const [activeStepIdx, setActiveStepIdx] = useState<number>(0);
+
   const steps = [
     {
       number: "01",
       icon: UploadCloud,
-      title: "Upload File or Paste Link",
-      description: "Upload any Android .apk file you downloaded, or simply paste a suspicious web link you received via WhatsApp, SMS, or Telegram.",
-      accent: "from-blue-500/20 to-blue-600/5 text-blue-400 border-blue-500/30",
+      title: "Upload APK or Paste Link",
+      prompt: "STEP 1: UPLOAD",
+      subtitle: "Drop .apk or URL",
+      description:
+        "Upload any Android .apk package from your phone or PC, or paste a suspicious link received via WhatsApp, Telegram, or SMS.",
+      details: "Full cryptographic hashing (SHA256/MD5) and immediate VirusTotal database lookup initialized upon upload.",
+      gradient: "linear-gradient(43deg, rgb(65, 88, 208) 0%, rgb(200, 80, 192) 46%, rgb(255, 204, 112) 100%)",
     },
     {
       number: "02",
       icon: SearchCode,
-      title: "Deep Permission & Code Scan",
-      description: "APK Shield inspects the internal app structure, checking if it requests excessive permissions like silent SMS reading, background audio, or screen overlays.",
-      accent: "from-cyan-500/20 to-cyan-600/5 text-cyan-400 border-cyan-500/30",
+      title: "Deep Permission Audit",
+      prompt: "STEP 2: AUDIT",
+      subtitle: "Analyze Manifest",
+      description:
+        "APK Shield decompiles the AndroidManifest and DEX code to detect high-risk permissions like SMS intercepts, Accessibility abuse, and Screen Overlays.",
+      details: "Detects hidden keylogger triggers and deceptive system prompt spoofing.",
+      gradient: "linear-gradient(43deg, rgb(30, 144, 255) 0%, rgb(138, 43, 226) 50%, rgb(255, 105, 180) 100%)",
     },
     {
       number: "03",
       icon: Cpu,
-      title: "AI Threat Intelligence Check",
-      description: "Our neural AI models cross-reference the app and link against global threat feeds, known banking trojans, and phishing kit patterns in real-time.",
-      accent: "from-indigo-500/20 to-indigo-600/5 text-indigo-400 border-indigo-500/30",
+      title: "Neural AI Threat Scan",
+      prompt: "STEP 3: AI SCAN",
+      subtitle: "Gemini + Threat Feeds",
+      description:
+        "Our neural intelligence engine cross-examines payload signatures against VirusTotal live feeds and known banking trojan patterns in real time.",
+      details: "Identifies SharkBot, Anatsa, SpyNote, and evasive APK droppers in seconds.",
+      gradient: "linear-gradient(43deg, rgb(15, 118, 110) 0%, rgb(14, 165, 233) 50%, rgb(168, 85, 247) 100%)",
     },
     {
       number: "04",
       icon: Gauge,
       title: "Instant 0–100 Risk Score",
-      description: "You receive a clear numeric risk score alongside an easy-to-understand breakdown explaining in everyday language why something is risky.",
-      accent: "from-purple-500/20 to-purple-600/5 text-purple-400 border-purple-500/30",
+      prompt: "STEP 4: SCORE",
+      subtitle: "Calculated Rating",
+      description:
+        "Receive a transparent, mathematical risk score that aggregates antivirus consensus, permission risk weight, and domain reputation.",
+      details: "Zero ambiguous cybersecurity jargon — scored from 0 (verified clean) to 100 (confirmed malware).",
+      gradient: "linear-gradient(43deg, rgb(217, 119, 6) 0%, rgb(239, 68, 68) 50%, rgb(219, 39, 119) 100%)",
     },
     {
       number: "05",
       icon: ShieldCheck,
-      title: "Plain-English Recommendation",
-      description: "Get an immediate, actionable verdict: Safe, Suspicious, or Dangerous — with clear guidance on what steps you should take.",
-      accent: "from-emerald-500/20 to-emerald-600/5 text-emerald-400 border-emerald-500/30",
+      title: "Plain-English Guidance",
+      prompt: "STEP 5: VERDICT",
+      subtitle: "Actionable Steps",
+      description:
+        "Get an immediate plain-English verdict (Safe, Suspicious, or Dangerous) with simple step-by-step guidance on whether to install or delete.",
+      details: "Provides containment advice: safe uninstall procedures, bank alerts, and credential reset checklists.",
+      gradient: "linear-gradient(43deg, rgb(16, 185, 129) 0%, rgb(6, 182, 212) 50%, rgb(59, 130, 246) 100%)",
     },
   ];
 
+  const trackerSlots = Array.from({ length: 25 }, (_, i) => `tr-${i + 1}`);
+
   return (
     <section id="how-it-works" className="py-24 bg-[#070c18] relative overflow-hidden border-t border-white/5">
-      {/* Glow Effects */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
+      {/* Background Ambient Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span>Simple, Transparent &amp; Fast</span>
+            <span>Interactive 3D Process Engine</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-sans">
@@ -59,46 +93,126 @@ export function HowItWorksSection() {
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-            You don't need to be a cybersecurity specialist to stay safe. APK Shield turns complex code disassembly and network intelligence into a simple risk score with plain-English instructions.
+            Hover or slide over each card to experience how APK Shield turns complex code disassembly, VirusTotal threat telemetry, and neural AI into instant protection.
           </p>
+
+          <div className="flex items-center justify-center gap-2 mt-4 text-xs font-mono text-blue-400/80">
+            <MousePointerClick className="w-4 h-4 animate-pulse" />
+            <span>Hover / Move cursor across cards for interactive 3D physics</span>
+          </div>
         </div>
 
-        {/* 5-Step Process Cards */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        {/* 5-Step 3D Interactive Tracker Cards Grid */}
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 lg:gap-6">
           {steps.map((step, idx) => {
             const Icon = step.icon;
             return (
               <div
                 key={idx}
-                className="relative rounded-2xl bg-[#0c1427]/90 border border-white/10 p-6 flex flex-col justify-between transition-all hover:border-blue-500/40 hover:-translate-y-1 hover:shadow-xl group"
+                className="flex flex-col items-center cursor-pointer group"
+                onClick={() => setActiveStepIdx(idx)}
               >
-                <div>
-                  {/* Step Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-b ${step.accent} border`}>
-                      <Icon className="w-6 h-6" />
+                {/* 3D Tracker Card Container */}
+                <div className="container noselect">
+                  <div className="canvas">
+                    {trackerSlots.map((tr) => (
+                      <div key={tr} className={`tracker ${tr}`} />
+                    ))}
+
+                    <div
+                      id="card"
+                      className="tracker-card"
+                      style={{
+                        background: step.gradient,
+                      }}
+                    >
+                      {/* Top Icon Badge */}
+                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/20 text-white shadow-lg">
+                        <Icon className="w-4 h-4" />
+                      </div>
+
+                      <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/40 text-[10px] font-black font-mono text-white/90 border border-white/20">
+                        {step.number}
+                      </div>
+
+                      {/* Prompt visible on idle, fades out on hover */}
+                      <p id="prompt" className="prompt-text">
+                        {step.prompt}
+                      </p>
+
+                      {/* Title revealed on hover */}
+                      <div className="title">
+                        {step.title}
+                      </div>
+
+                      {/* Subtitle pinned at bottom */}
+                      <div className="subtitle text-[11px] font-mono font-medium text-white/80 drop-shadow">
+                        {step.subtitle}
+                      </div>
                     </div>
-                    <span className="text-sm font-black font-mono text-white/30 group-hover:text-blue-400 transition-colors">
-                      {step.number}
-                    </span>
                   </div>
-
-                  <h3 className="text-base font-bold text-white mb-2 font-sans">
-                    {step.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                    {step.description}
-                  </p>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-slate-400">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Automated in Seconds</span>
+                {/* Card Summary Label underneath */}
+                <div className="mt-4 text-center max-w-[190px]">
+                  <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
+                    {step.title}
+                  </div>
+                  <div className="text-[11px] text-slate-400 line-clamp-2 mt-1 leading-snug font-sans">
+                    {step.description}
+                  </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Selected Step Deep Dive Panel */}
+        <div className="mt-14 max-w-4xl mx-auto rounded-2xl bg-[#0b1222]/90 border border-blue-500/20 p-6 sm:p-8 backdrop-blur-sm shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                {React.createElement(steps[activeStepIdx].icon, { className: "w-5 h-5" })}
+              </div>
+              <div>
+                <div className="text-xs font-mono text-blue-400 uppercase tracking-wider">
+                  Step {steps[activeStepIdx].number} of 05
+                </div>
+                <h3 className="text-xl font-bold text-white font-sans">
+                  {steps[activeStepIdx].title}
+                </h3>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono text-xs flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Automated Engine</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
+              <div className="text-xs font-mono uppercase text-slate-400 flex items-center gap-1.5">
+                <Info className="w-3.5 h-3.5 text-blue-400" />
+                <span>How It Works For You</span>
+              </div>
+              <p className="text-slate-200 leading-relaxed font-sans text-xs sm:text-sm">
+                {steps[activeStepIdx].description}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/20 space-y-2">
+              <div className="text-xs font-mono uppercase text-blue-300 flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                <span>Deep Security Telemetry</span>
+              </div>
+              <p className="text-slate-300 leading-relaxed font-sans text-xs sm:text-sm">
+                {steps[activeStepIdx].details}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Interactive Verdict Sample Showcase */}
@@ -114,7 +228,7 @@ export function HowItWorksSection() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans">
             {/* Safe */}
-            <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-left">
+            <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-left hover:border-emerald-500/50 transition-colors">
               <div className="flex items-center justify-between mb-2">
                 <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold uppercase">
                   Risk Score: 04 / 100
@@ -128,7 +242,7 @@ export function HowItWorksSection() {
             </div>
 
             {/* Suspicious */}
-            <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 text-left">
+            <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/30 text-left hover:border-amber-500/50 transition-colors">
               <div className="flex items-center justify-between mb-2">
                 <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold uppercase">
                   Risk Score: 58 / 100
@@ -142,7 +256,7 @@ export function HowItWorksSection() {
             </div>
 
             {/* Dangerous */}
-            <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-left">
+            <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-left hover:border-red-500/50 transition-colors">
               <div className="flex items-center justify-between mb-2">
                 <span className="px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-mono text-[10px] font-bold uppercase">
                   Risk Score: 96 / 100
@@ -160,3 +274,4 @@ export function HowItWorksSection() {
     </section>
   );
 }
+
