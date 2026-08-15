@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   UploadCloud,
   SearchCode,
   Cpu,
   Gauge,
-  CheckCircle2,
   ShieldCheck,
   ShieldAlert,
   Sparkles,
   MousePointerClick,
-  Info,
 } from "lucide-react";
 
 export function HowItWorksSection() {
-  const [activeStepIdx, setActiveStepIdx] = useState<number>(0);
+
 
   const steps = [
     {
@@ -109,8 +107,7 @@ export function HowItWorksSection() {
             return (
               <div
                 key={idx}
-                className="flex flex-col items-center cursor-pointer group"
-                onClick={() => setActiveStepIdx(idx)}
+                className="flex flex-col items-center group"
               >
                 {/* 3D Tracker Card Container */}
                 <div className="container noselect">
@@ -126,93 +123,72 @@ export function HowItWorksSection() {
                         background: step.gradient,
                       }}
                     >
-                      {/* Top Icon Badge */}
-                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/20 text-white shadow-lg">
-                        <Icon className="w-4 h-4" />
+                      {/* IDLE LAYER - Visible when not hovered */}
+                      <div className="card-idle-layer">
+                        {/* Top Icon Badge */}
+                        <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/20 text-white shadow-lg">
+                          <Icon className="w-4 h-4" />
+                        </div>
+
+                        <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/40 text-[10px] font-black font-mono text-white/90 border border-white/20">
+                          {step.number}
+                        </div>
+
+                        {/* Centered Large Icon */}
+                        <div className="w-14 h-14 rounded-2xl bg-black/20 border border-white/20 backdrop-blur-sm flex items-center justify-center text-white mb-2 shadow-inner">
+                          <Icon className="w-7 h-7" />
+                        </div>
+
+                        {/* Prompt text pinned at bottom */}
+                        <p id="prompt" className="prompt-text">
+                          {step.prompt}
+                        </p>
+
+                        {/* Subtitle pinned at bottom */}
+                        <div className="subtitle text-[11px] font-mono font-medium text-white/90 drop-shadow">
+                          {step.subtitle}
+                        </div>
                       </div>
 
-                      <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/40 text-[10px] font-black font-mono text-white/90 border border-white/20">
-                        {step.number}
-                      </div>
+                      {/* HOVER LAYER - Reveals all the details on hover */}
+                      <div className="card-hover-details">
+                        <div>
+                          {/* Header inside card */}
+                          <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/15">
+                            <div className="flex items-center gap-1.5">
+                              <span className="px-1.5 py-0.5 rounded bg-blue-500/30 text-blue-200 font-mono text-[10px] font-bold">
+                                {step.number}
+                              </span>
+                              <span className="text-xs font-bold text-white font-sans truncate">
+                                {step.title}
+                              </span>
+                            </div>
+                            <Icon className="w-3.5 h-3.5 text-blue-300 flex-shrink-0" />
+                          </div>
 
-                      {/* Prompt visible on idle, fades out on hover */}
-                      <p id="prompt" className="prompt-text">
-                        {step.prompt}
-                      </p>
+                          {/* Full Detailed Description */}
+                          <p className="text-[11px] text-slate-200 font-sans leading-relaxed mt-2">
+                            {step.description}
+                          </p>
+                        </div>
 
-                      {/* Title revealed on hover */}
-                      <div className="title">
-                        {step.title}
-                      </div>
-
-                      {/* Subtitle pinned at bottom */}
-                      <div className="subtitle text-[11px] font-mono font-medium text-white/80 drop-shadow">
-                        {step.subtitle}
+                        {/* Security Telemetry Details */}
+                        <div className="mt-2 pt-2 border-t border-white/10">
+                          <div className="text-[9px] font-mono text-blue-300 uppercase tracking-wider mb-1 flex items-center gap-1">
+                            <Sparkles className="w-2.5 h-2.5 text-blue-400" />
+                            <span>Security Engine</span>
+                          </div>
+                          <div className="text-[10px] text-slate-300 font-mono line-clamp-2 leading-tight">
+                            {step.details}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                {/* Card Summary Label underneath */}
-                <div className="mt-4 text-center max-w-[190px]">
-                  <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
-                    {step.title}
-                  </div>
-                  <div className="text-[11px] text-slate-400 line-clamp-2 mt-1 leading-snug font-sans">
-                    {step.description}
                   </div>
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Selected Step Deep Dive Panel */}
-        <div className="mt-14 max-w-4xl mx-auto rounded-2xl bg-[#0b1222]/90 border border-blue-500/20 p-6 sm:p-8 backdrop-blur-sm shadow-2xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                {React.createElement(steps[activeStepIdx].icon, { className: "w-5 h-5" })}
-              </div>
-              <div>
-                <div className="text-xs font-mono text-blue-400 uppercase tracking-wider">
-                  Step {steps[activeStepIdx].number} of 05
-                </div>
-                <h3 className="text-xl font-bold text-white font-sans">
-                  {steps[activeStepIdx].title}
-                </h3>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-mono text-xs flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Automated Engine</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-2">
-              <div className="text-xs font-mono uppercase text-slate-400 flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5 text-blue-400" />
-                <span>How It Works For You</span>
-              </div>
-              <p className="text-slate-200 leading-relaxed font-sans text-xs sm:text-sm">
-                {steps[activeStepIdx].description}
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/20 space-y-2">
-              <div className="text-xs font-mono uppercase text-blue-300 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                <span>Deep Security Telemetry</span>
-              </div>
-              <p className="text-slate-300 leading-relaxed font-sans text-xs sm:text-sm">
-                {steps[activeStepIdx].details}
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Interactive Verdict Sample Showcase */}
