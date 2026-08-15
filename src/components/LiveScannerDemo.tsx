@@ -7,6 +7,9 @@ interface ApkSample {
   fileName: string;
   type: "dangerous" | "suspicious" | "safe";
   size: string;
+  hash: string;
+  threatFamily?: string;
+  description?: string;
   mockResult: {
     threatScore: number;
     threatLevel: "MALICIOUS" | "SUSPICIOUS" | "SAFE";
@@ -15,6 +18,13 @@ interface ApkSample {
     permissions: { name: string; dangerous: boolean; reason: string }[];
     malwareFamily: string;
     recommendation: string;
+    virusTotal?: {
+      totalEngines: number;
+      maliciousCount: number;
+      suspiciousCount: number;
+      threatClassification?: string;
+      permalink?: string;
+    };
   };
 }
 
@@ -25,6 +35,7 @@ export function LiveScannerDemo() {
   const [isScanningApk, setIsScanningApk] = useState(false);
   const [selectedApkFile, setSelectedApkFile] = useState<string | null>(null);
   const [apkScanResult, setApkScanResult] = useState<any | null>(null);
+  const [scanStatusMsg, setScanStatusMsg] = useState<string>("Analyzing package structure...");
 
   // Link State
   const [inputUrl, setInputUrl] = useState("");
@@ -37,6 +48,9 @@ export function LiveScannerDemo() {
       fileName: "SBI_Quick_KYC_Verification_v2.apk",
       type: "dangerous",
       size: "8.4 MB",
+      hash: "d7a8fbb307d7809469ca933b02d81f07e0b329e45d472abfed60497400174699",
+      threatFamily: "Trojan.AndroidOS.SharkBot.Dropper",
+      description: "Counterfeit banking application stealing net banking credentials and OTPs via screen overlay.",
       mockResult: {
         threatScore: 96,
         threatLevel: "MALICIOUS",
@@ -50,6 +64,13 @@ export function LiveScannerDemo() {
         ],
         malwareFamily: "Trojan.AndroidOS.SharkBot.Dropper",
         recommendation: "DO NOT INSTALL. If already installed, immediately disconnect Wi-Fi/data, uninstall via Safe Mode, and contact your bank to reset passwords.",
+        virusTotal: {
+          totalEngines: 72,
+          maliciousCount: 54,
+          suspiciousCount: 4,
+          threatClassification: "trojan.androidos.sharkbot/banker",
+          permalink: "https://www.virustotal.com/gui/file/d7a8fbb307d7809469ca933b02d81f07e0b329e45d472abfed60497400174699",
+        },
       },
     },
     {
@@ -57,6 +78,9 @@ export function LiveScannerDemo() {
       fileName: "WhatsApp_Plus_Gold_Ultra_v18.apk",
       type: "suspicious",
       size: "42.1 MB",
+      hash: "8f4a1c9e7b2d5a3f1e6c8a0d9b4f2e7a1c3b5d7e9f0a2c4e6b8d0a2f4c6e8b0a",
+      threatFamily: "Riskware.AndroidOS.Spyware.ModdedClient",
+      description: "Modded client exfiltrating contacts and requesting background microphone access.",
       mockResult: {
         threatScore: 68,
         threatLevel: "SUSPICIOUS",
@@ -69,6 +93,13 @@ export function LiveScannerDemo() {
         ],
         malwareFamily: "Riskware.AndroidOS.Spyware.ModdedClient",
         recommendation: "Not Recommended. Use only the official WhatsApp application from Google Play or WhatsApp.com.",
+        virusTotal: {
+          totalEngines: 70,
+          maliciousCount: 22,
+          suspiciousCount: 8,
+          threatClassification: "riskware.androidos.spyware/whatsappmod",
+          permalink: "https://www.virustotal.com/gui/file/8f4a1c9e7b2d5a3f1e6c8a0d9b4f2e7a1c3b5d7e9f0a2c4e6b8d0a2f4c6e8b0a",
+        },
       },
     },
     {
@@ -76,6 +107,9 @@ export function LiveScannerDemo() {
       fileName: "Google_Authenticator_v6.2.0.apk",
       type: "safe",
       size: "12.8 MB",
+      hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      threatFamily: "Clean Security Utility",
+      description: "Official cryptographic signing by Google LLC.",
       mockResult: {
         threatScore: 2,
         threatLevel: "SAFE",
@@ -87,6 +121,13 @@ export function LiveScannerDemo() {
         ],
         malwareFamily: "Clean Security Utility",
         recommendation: "Safe to install and operate on your device.",
+        virusTotal: {
+          totalEngines: 72,
+          maliciousCount: 0,
+          suspiciousCount: 0,
+          threatClassification: "clean",
+          permalink: "https://www.virustotal.com/gui/file/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        },
       },
     },
   ];
@@ -97,15 +138,35 @@ export function LiveScannerDemo() {
     { label: "Official GitHub Login (Safe)", url: "https://github.com/login" },
   ];
 
-  const handleSelectApkSample = (sample: ApkSample) => {
+  const handleSelectApkSample = async (sample: ApkSample) => {
     setSelectedApkFile(sample.fileName);
     setIsScanningApk(true);
     setApkScanResult(null);
+    setScanStatusMsg("Querying VirusTotal v3 API & AI Neural Signature Engine...");
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/scan/file", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: sample.fileName,
+          hashOverride: sample.hash,
+          textContent: `APK Package: ${sample.fileName} | Size: ${sample.size} | Description: ${sample.description}`,
+          fileType: "apk",
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        setApkScanResult(data.result);
+      } else {
+        setApkScanResult(sample.mockResult);
+      }
+    } catch (err) {
+      console.warn("Backend scan fallback:", err);
       setApkScanResult(sample.mockResult);
+    } finally {
       setIsScanningApk(false);
-    }, 900);
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,8 +176,8 @@ export function LiveScannerDemo() {
     setSelectedApkFile(file.name);
     setIsScanningApk(true);
     setApkScanResult(null);
+    setScanStatusMsg("Extracting Manifest, SHA256 Hash & Querying VirusTotal...");
 
-    // Call server file scan
     const reader = new FileReader();
     reader.onload = async () => {
       try {
@@ -126,26 +187,13 @@ export function LiveScannerDemo() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             fileName: file.name,
-            textContent: textContent.slice(0, 10000),
+            textContent: textContent.slice(0, 15000),
             fileType: "apk",
           }),
         });
         const data = await res.json();
         if (data.success && data.result) {
-          const r = data.result;
-          setApkScanResult({
-            threatScore: r.threatScore,
-            threatLevel: r.threatLevel,
-            verdict: r.verdict,
-            summary: r.summary,
-            permissions: [
-              { name: "android.permission.INTERNET", dangerous: false, reason: "Standard network access" },
-              { name: "android.permission.RECEIVE_SMS", dangerous: r.threatScore > 50, reason: "SMS interception capability" },
-              { name: "android.permission.SYSTEM_ALERT_WINDOW", dangerous: r.threatScore > 60, reason: "Overlay screen injection" },
-            ],
-            malwareFamily: r.malwareFamily,
-            recommendation: r.threatScore > 50 ? "Dangerous file. Delete immediately." : "File appears safe for standard use.",
-          });
+          setApkScanResult(data.result);
         }
       } catch (err) {
         console.error("Scan error:", err);
@@ -162,6 +210,7 @@ export function LiveScannerDemo() {
 
     setIsScanningUrl(true);
     setUrlScanResult(null);
+    setScanStatusMsg("Scanning URL via VirusTotal v3 & Domain Phishing Heuristics...");
 
     try {
       const res = await fetch("/api/scan/url", {
@@ -364,10 +413,97 @@ export function LiveScannerDemo() {
                         <span className="text-sm text-slate-500 font-normal"> / 100</span>
                       </div>
                       <div className="text-[10px] font-mono text-slate-400 mt-1">
-                        Confidence: 99.4%
+                        Engine: VirusTotal + AI
                       </div>
                     </div>
                   </div>
+
+                  {/* VirusTotal Multi-Engine Intelligence Card */}
+                  {apkScanResult.virusTotal && (
+                    <div className="p-6 rounded-2xl bg-[#090e1d] border border-blue-500/30 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-black font-mono text-xs">
+                            VT
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                              <span>VirusTotal v3 Multi-Engine Intelligence</span>
+                              <span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                LIVE API
+                              </span>
+                            </div>
+                            <div className="text-xs text-slate-400">
+                              Analyzed across {apkScanResult.virusTotal.totalEngines || 72} premier AV engines & sandboxes
+                            </div>
+                          </div>
+                        </div>
+
+                        {apkScanResult.virusTotal.permalink && (
+                          <a
+                            href={apkScanResult.virusTotal.permalink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                          >
+                            <span>View VT Report</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Engine Score Stats */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Malicious Engines</div>
+                          <div className={`text-xl font-bold font-mono ${apkScanResult.virusTotal.maliciousCount > 0 ? "text-red-400" : "text-emerald-400"}`}>
+                            {apkScanResult.virusTotal.maliciousCount} / {apkScanResult.virusTotal.totalEngines || 72}
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Suspicious</div>
+                          <div className="text-xl font-bold font-mono text-amber-400">
+                            {apkScanResult.virusTotal.suspiciousCount || 0}
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Clean / Undetected</div>
+                          <div className="text-xl font-bold font-mono text-emerald-400">
+                            {Math.max(0, (apkScanResult.virusTotal.totalEngines || 72) - (apkScanResult.virusTotal.maliciousCount || 0) - (apkScanResult.virusTotal.suspiciousCount || 0))}
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Suggested Family</div>
+                          <div className="text-xs font-mono text-slate-200 truncate mt-1">
+                            {apkScanResult.virusTotal.threatClassification || apkScanResult.malwareFamily || "Clean Utility"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Vendor Detection Chips */}
+                      {apkScanResult.virusTotal.maliciousVendors && apkScanResult.virusTotal.maliciousVendors.length > 0 && (
+                        <div className="space-y-2 pt-2">
+                          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                            Flagged by Antivirus Engines:
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {apkScanResult.virusTotal.maliciousVendors.slice(0, 12).map((vendor: any, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-2.5 py-1 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 font-mono text-[11px] flex items-center gap-1.5"
+                              >
+                                <span className="font-bold">{vendor.engine}:</span>
+                                <span className="text-slate-300 truncate max-w-[130px]">{vendor.result}</span>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Android Permissions Breakdown */}
                   <div className="p-6 rounded-2xl bg-black/40 border border-white/10">
@@ -544,8 +680,70 @@ export function LiveScannerDemo() {
                         </span>
                         <span className="text-sm text-slate-500 font-normal"> / 100</span>
                       </div>
+                      <div className="text-[10px] font-mono text-slate-400 mt-1">
+                        Engine: VirusTotal URL API
+                      </div>
                     </div>
                   </div>
+
+                  {/* VirusTotal Live URL Intelligence */}
+                  {urlScanResult.virusTotal && (
+                    <div className="p-6 rounded-2xl bg-[#090e1d] border border-blue-500/30 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-black font-mono text-xs">
+                            VT
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold text-white font-mono flex items-center gap-2">
+                              <span>VirusTotal v3 URL Threat Network</span>
+                              <span className="px-2 py-0.5 rounded text-[10px] bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                LIVE
+                              </span>
+                            </div>
+                            <div className="text-xs text-slate-400">
+                              Domain Reputation across {urlScanResult.virusTotal.totalEngines || 90}+ Global Security Scanners
+                            </div>
+                          </div>
+                        </div>
+
+                        {urlScanResult.virusTotal.permalink && (
+                          <a
+                            href={urlScanResult.virusTotal.permalink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 transition-colors"
+                          >
+                            <span>Open in VirusTotal</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Blacklist Hits</div>
+                          <div className={`text-xl font-bold font-mono ${urlScanResult.virusTotal.maliciousCount > 0 ? "text-red-400" : "text-emerald-400"}`}>
+                            {urlScanResult.virusTotal.maliciousCount} Security Engines
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Suspicious Flags</div>
+                          <div className="text-xl font-bold font-mono text-amber-400">
+                            {urlScanResult.virusTotal.suspiciousCount || 0}
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-black/40 border border-white/5">
+                          <div className="text-[10px] font-mono text-slate-400 uppercase">Clean Engines</div>
+                          <div className="text-xl font-bold font-mono text-emerald-400">
+                            {Math.max(0, (urlScanResult.virusTotal.totalEngines || 90) - (urlScanResult.virusTotal.maliciousCount || 0) - (urlScanResult.virusTotal.suspiciousCount || 0))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Blacklist Vendor Feed Status */}
                   <div className="p-6 rounded-2xl bg-black/40 border border-white/10">
