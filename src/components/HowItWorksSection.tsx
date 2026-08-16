@@ -76,38 +76,62 @@ export function HowItWorksSection() {
   const trackerSlots = Array.from({ length: 25 }, (_, i) => `tr-${i + 1}`);
 
   return (
-    <section id="how-it-works" className="py-24 bg-[#070c18] relative overflow-hidden border-t border-white/5">
+    <section id="how-it-works" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
       {/* Background Ambient Glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4"
+          >
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />
             <span>Interactive 3D Process Engine</span>
-          </div>
+          </motion.div>
 
-          <div className="my-2 max-w-4xl mx-auto flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="my-2 max-w-4xl mx-auto flex justify-center"
+          >
             <LiquidText
               lines={[
                 "How APK Shield",
                 "Protects You in Real-Time"
               ]}
               lineColors={["#ffffff", "#38bdf8"]}
-              fontSize={135}
-              className="h-28 sm:h-36 md:h-44 max-w-3xl"
+              fontSize={110}
+              className="h-28 sm:h-36 md:h-42 max-w-3xl"
             />
-          </div>
+          </motion.div>
 
-          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal"
+          >
             Hover or slide over each card to experience how APK Shield turns complex code disassembly, VirusTotal threat telemetry, and neural AI into instant protection.
-          </p>
+          </motion.p>
 
-          <div className="flex items-center justify-center gap-2 mt-4 text-xs font-mono text-blue-400/80">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex items-center justify-center gap-2 mt-4 text-xs font-mono text-blue-400/80"
+          >
             <MousePointerClick className="w-4 h-4 animate-pulse" />
             <span>Hover / Move cursor across cards for interactive 3D physics</span>
-          </div>
+          </motion.div>
         </div>
 
         {/* 5-Step 3D Interactive Tracker Cards Grid */}

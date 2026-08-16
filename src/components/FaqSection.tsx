@@ -34,30 +34,48 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-[#070b16] relative overflow-hidden border-t border-white/5">
+    <section id="faq" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4"
+          >
             <HelpCircle className="w-3.5 h-3.5 text-blue-400" />
             <span>Clear Answers &amp; Security Principles</span>
-          </div>
+          </motion.div>
 
-          <div className="my-2 max-w-3xl mx-auto flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="my-2 max-w-3xl mx-auto flex justify-center"
+          >
             <LiquidText
               lines={[
                 "Frequently Asked",
                 "Questions & Answers"
               ]}
               lineColors={["#ffffff", "#38bdf8"]}
-              fontSize={140}
-              className="h-28 sm:h-36 md:h-44 max-w-2xl"
+              fontSize={110}
+              className="h-28 sm:h-36 md:h-42 max-w-2xl"
             />
-          </div>
+          </motion.div>
 
-          <p className="mt-4 text-base text-slate-300 leading-relaxed font-normal">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-4 text-base text-slate-300 leading-relaxed font-normal"
+          >
             Everything you need to know about APK Shield's analysis engine, privacy guarantees, and protection model.
-          </p>
+          </motion.p>
         </div>
 
         {/* Accordion List */}

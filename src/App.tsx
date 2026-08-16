@@ -2,6 +2,8 @@
 
 import React from "react";
 import { ResponsiveHeroBanner } from "./components/ui/responsive-hero-banner";
+import { CyberBackground } from "./components/CyberBackground";
+import { CyberCursorFollower } from "./components/CyberCursorFollower";
 import { ProblemSection } from "./components/ProblemSection";
 import { HowItWorksSection } from "./components/HowItWorksSection";
 import { FeaturesSection } from "./components/FeaturesSection";
@@ -39,6 +41,9 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#070b14] text-white selection:bg-blue-500/30 selection:text-blue-200 font-sans antialiased">
+      {/* Subtle, non-intrusive cyber data bit cursor follow effect */}
+      <CyberCursorFollower />
+
       {/* 1. Primary Responsive Hero Banner with Unified Floating Navigation */}
       <ResponsiveHeroBanner
         badgeLabel="v2.5 Live"
@@ -60,7 +65,6 @@ export function App() {
           { label: "Threat Engine", href: "#how-it-works" },
           { label: "Features", href: "#features" },
           { label: "Live Scanner", href: "#scanner", isActive: true },
-          { label: "IOC Vault", href: "#ioc-vault" },
           { label: "Download App", href: "#download" },
           { label: "FAQ", href: "#faq" },
         ]}
@@ -74,8 +78,11 @@ export function App() {
         ]}
       />
 
-      {/* Main Single-Page Scrolling Product Site */}
-      <main>
+      {/* Main Single-Page Content Sections (with ambient animated cyber background) */}
+      <main className="relative overflow-hidden">
+        {/* Animated Cyber Defense Matrix Background for all non-hero sections */}
+        <CyberBackground />
+
         {/* 2. The Problem Section */}
         <ProblemSection />
 

@@ -231,33 +231,51 @@ export function LiveScannerDemo() {
   };
 
   return (
-    <section id="scanner" className="py-24 bg-[#070b16] relative overflow-hidden border-t border-white/5">
+    <section id="scanner" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
       {/* Background radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-600/10 blur-[160px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider mb-4"
+          >
             <Zap className="w-3.5 h-3.5 text-blue-400" />
             <span>Interactive Product Demonstration</span>
-          </div>
+          </motion.div>
 
-          <div className="my-2 max-w-4xl mx-auto flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="my-2 max-w-4xl mx-auto flex justify-center"
+          >
             <LiquidText
               lines={[
                 "Try APK Shield",
                 "Live Threat Scanner"
               ]}
               lineColors={["#ffffff", "#38bdf8"]}
-              fontSize={135}
-              className="h-28 sm:h-36 md:h-44 max-w-3xl"
+              fontSize={110}
+              className="h-28 sm:h-36 md:h-42 max-w-3xl"
             />
-          </div>
+          </motion.div>
 
-          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal"
+          >
             Experience our neural threat intelligence engine right now. Inspect sample APK packages or paste suspicious links to see real-time risk scoring in action.
-          </p>
+          </motion.p>
         </div>
 
         {/* Tab Switcher */}

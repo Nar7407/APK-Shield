@@ -18,7 +18,6 @@ import {
   Radio,
   FileCode,
   Globe,
-  Database,
 } from "lucide-react";
 import { LiquidText } from "../LiquidText";
 
@@ -63,7 +62,6 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     { label: "Threat Engine", href: "#how-it-works" },
     { label: "Features", href: "#features" },
     { label: "Live Scanner", href: "#scanner", isActive: true },
-    { label: "IOC Vault", href: "#ioc-vault" },
     { label: "Download App", href: "#download" },
     { label: "FAQ", href: "#faq" },
   ],
