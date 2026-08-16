@@ -238,14 +238,18 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
       {/* Unified Sticky Floating Header / Navbar */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "py-2.5 bg-[#070b14]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/60"
-            : "py-3.5 sm:py-4 bg-transparent"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-none ${
+          isScrolled ? "py-2.5 bg-transparent" : "py-3.5 sm:py-4 bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-2 px-3.5 sm:px-4 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-lg shadow-black/40">
+          <div
+            className={`pointer-events-auto flex items-center justify-between py-2 px-3.5 sm:px-4 rounded-2xl border transition-all duration-300 ${
+              isScrolled
+                ? "bg-slate-950/30 hover:bg-slate-950/45 border-white/10 backdrop-blur-md shadow-lg shadow-black/20"
+                : "bg-slate-900/20 hover:bg-slate-900/35 border-white/10 backdrop-blur-sm"
+            }`}
+          >
             {/* Brand Logo */}
             <a
               href="#"
@@ -272,7 +276,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              <div className="flex items-center gap-1 rounded-full bg-slate-950/70 px-2 py-1 border border-white/10 backdrop-blur">
+              <div className="flex items-center gap-1 rounded-full bg-slate-950/40 px-2 py-1 border border-white/10 backdrop-blur-sm">
                 {navLinks.map((link, index) => (
                   <a
                     key={index}
@@ -306,7 +310,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 onMouseEnter={() => cyberAudio.playHover()}
                 title={isMuted ? "Sound Effects Muted" : "Cyber Audio FX Enabled"}
                 aria-label="Toggle cyber audio effects"
-                className="ml-1 p-2 rounded-full bg-slate-900/80 border border-white/10 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer"
+                className="ml-1 p-2 rounded-full bg-slate-900/50 border border-white/10 hover:border-cyan-500/40 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer backdrop-blur-sm"
               >
                 {isMuted ? (
                   <VolumeX className="w-3.5 h-3.5 text-slate-500" />
@@ -324,7 +328,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 onMouseEnter={() => cyberAudio.playHover()}
                 title="Open Navigation Menu Drawer"
                 aria-label="Open navigation menu drawer"
-                className="ml-1 p-2 rounded-full bg-slate-900/80 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+                className="ml-1 p-2 rounded-full bg-slate-900/50 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm backdrop-blur-sm"
               >
                 <Menu className="w-4 h-4 text-slate-200" />
               </button>
@@ -350,7 +354,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                   setMobileMenuOpen(true);
                 }}
                 onMouseEnter={() => cyberAudio.playHover()}
-                className="p-2 rounded-lg bg-slate-800/80 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer"
+                className="p-2 rounded-lg bg-slate-800/60 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer backdrop-blur-sm"
                 aria-label="Open menu drawer"
               >
                 <Menu className="h-4 w-4" />
@@ -364,7 +368,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 setMobileMenuOpen(true);
               }}
               onMouseEnter={() => cyberAudio.playHover()}
-              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800/80 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer"
+              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800/60 border border-white/10 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer backdrop-blur-sm"
               aria-expanded={mobileMenuOpen}
               aria-label="Open menu drawer"
             >

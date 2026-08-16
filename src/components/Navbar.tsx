@@ -45,7 +45,7 @@ export function Navbar({ onDownloadClick }: NavbarProps) {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#0a0f1d]/90 backdrop-blur-md border-b border-blue-500/15 shadow-xl shadow-black/40 py-3.5"
+          ? "bg-[#070b14]/30 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20 py-3.5"
           : "bg-transparent py-5"
       }`}
     >

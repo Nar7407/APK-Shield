@@ -1,16 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { ResponsiveHeroBanner } from "./components/ui/responsive-hero-banner";
 import { CyberBackground } from "./components/CyberBackground";
 import { CyberCursorFollower } from "./components/CyberCursorFollower";
-import { ProblemSection } from "./components/ProblemSection";
-import { HowItWorksSection } from "./components/HowItWorksSection";
-import { FeaturesSection } from "./components/FeaturesSection";
-import { LiveScannerDemo } from "./components/LiveScannerDemo";
-import { DownloadSection } from "./components/DownloadSection";
-import { FaqSection } from "./components/FaqSection";
-import { Footer } from "./components/Footer";
+import { CyberLoadingFallback } from "./components/CyberLoadingFallback";
+
+// Code-split major page sections with React.lazy for instant initial paint and optimized bundle chunks
+const ProblemSection = React.lazy(() =>
+  import("./components/ProblemSection").then((m) => ({ default: m.ProblemSection }))
+);
+const HowItWorksSection = React.lazy(() =>
+  import("./components/HowItWorksSection").then((m) => ({ default: m.HowItWorksSection }))
+);
+const FeaturesSection = React.lazy(() =>
+  import("./components/FeaturesSection").then((m) => ({ default: m.FeaturesSection }))
+);
+const LiveScannerDemo = React.lazy(() =>
+  import("./components/LiveScannerDemo").then((m) => ({ default: m.LiveScannerDemo }))
+);
+const DownloadSection = React.lazy(() =>
+  import("./components/DownloadSection").then((m) => ({ default: m.DownloadSection }))
+);
+const FaqSection = React.lazy(() =>
+  import("./components/FaqSection").then((m) => ({ default: m.FaqSection }))
+);
+const Footer = React.lazy(() =>
+  import("./components/Footer").then((m) => ({ default: m.Footer }))
+);
 
 export function App() {
   const handleDownloadClick = () => {
@@ -44,7 +61,7 @@ export function App() {
       {/* Subtle, non-intrusive cyber data bit cursor follow effect */}
       <CyberCursorFollower />
 
-      {/* 1. Primary Responsive Hero Banner with Unified Floating Navigation */}
+      {/* 1. Primary Responsive Hero Banner with Unified Floating Navigation (Loaded Immediately) */}
       <ResponsiveHeroBanner
         badgeLabel="v2.5 Live"
         badgeText="Real-Time Mobile APK Sandbox & Phishing Heuristics"
@@ -78,32 +95,44 @@ export function App() {
         ]}
       />
 
-      {/* Main Single-Page Content Sections (with ambient animated cyber background) */}
+      {/* Main Content with Ambient Cyber Background & Global Suspense Boundary */}
       <main className="relative overflow-hidden">
         {/* Animated Cyber Defense Matrix Background for all non-hero sections */}
         <CyberBackground />
 
-        {/* 2. The Problem Section */}
-        <ProblemSection />
+        {/* Global Suspense Boundary for dynamically loaded modules */}
+        <Suspense
+          fallback={
+            <CyberLoadingFallback
+              sectionTitle="Initializing Threat Defense Pipeline..."
+              minHeight="min-h-[500px]"
+            />
+          }
+        >
+          {/* 2. The Problem Section */}
+          <ProblemSection />
 
-        {/* 3. How It Works / Threat Engine Section */}
-        <HowItWorksSection />
+          {/* 3. How It Works / Threat Engine Section */}
+          <HowItWorksSection />
 
-        {/* 4. Features Section */}
-        <FeaturesSection />
+          {/* 4. Features Section */}
+          <FeaturesSection />
 
-        {/* 5. Live Interactive Scanner Demo */}
-        <LiveScannerDemo />
+          {/* 5. Live Interactive Scanner Demo */}
+          <LiveScannerDemo />
 
-        {/* 6. Dedicated Download Section */}
-        <DownloadSection />
+          {/* 6. Dedicated Download Section */}
+          <DownloadSection />
 
-        {/* 7. FAQ Section */}
-        <FaqSection />
+          {/* 7. FAQ Section */}
+          <FaqSection />
+        </Suspense>
       </main>
 
-      {/* 8. Footer */}
-      <Footer />
+      {/* 8. Footer (Lazy Loaded) */}
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }
