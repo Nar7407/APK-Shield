@@ -1,9 +1,163 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Gauge, FileText, Layers, Database, ShieldAlert, Zap, Check, Lock, Cpu, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { LiquidText } from "./LiquidText";
+import { cyberAudio } from "../lib/audio";
+import { FeatureCardSkeleton } from "./Skeletons";
+
+interface FeatureCardProps {
+  key?: React.Key;
+  item: {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    description: string;
+    highlight: string;
+  };
+  idx: number;
+}
+
+function MagneticFeatureCard({ item, idx }: FeatureCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(-500);
+  const mouseY = useMotionValue(-500);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const { left, top } = cardRef.current.getBoundingClientRect();
+    mouseX.set(e.clientX - left);
+    mouseY.set(e.clientY - top);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    cyberAudio.playHover();
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    mouseX.set(-500);
+    mouseY.set(-500);
+  };
+
+  // Radial blue-cyan gradient spotlight that follows cursor inside card boundary
+  const backgroundGradient = useMotionTemplate`
+    radial-gradient(
+      340px circle at ${mouseX}px ${mouseY}px,
+      rgba(56, 189, 248, 0.18),
+      rgba(59, 130, 246, 0.08) 40%,
+      transparent 80%
+    )
+  `;
+
+  // Dynamic perimeter glow along the card border when mouse is nearby
+  const borderGradient = useMotionTemplate`
+    radial-gradient(
+      260px circle at ${mouseX}px ${mouseY}px,
+      rgba(56, 189, 248, 0.55),
+      rgba(99, 102, 241, 0.25) 45%,
+      transparent 70%
+    )
+  `;
+
+  const Icon = item.icon;
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: idx * 0.08 }}
+      whileHover={{ y: -5 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="relative rounded-2xl bg-[#0b1329]/80 backdrop-blur-xl border border-white/[0.08] p-7 flex flex-col justify-between overflow-hidden group cursor-default transition-all duration-300 shadow-lg shadow-black/40 hover:shadow-2xl hover:shadow-cyan-950/40"
+    >
+      {/* 1. Magnetic Border Glow (Cyber-glass edge highlight) */}
+      <motion.div
+        aria-hidden="true"
+        style={{
+          background: borderGradient,
+          opacity: isHovered ? 1 : 0,
+        }}
+        className="absolute -inset-px rounded-2xl pointer-events-none transition-opacity duration-300 z-0"
+      />
+
+      {/* 2. Cyber Glass Inner Background Shield for mathematical contrast */}
+      <div className="absolute inset-[1px] rounded-[15px] bg-[#070b14]/90 backdrop-blur-2xl z-[1]" />
+
+      {/* 3. Magnetic Internal Radial Blue Glow */}
+      <motion.div
+        aria-hidden="true"
+        style={{
+          background: backgroundGradient,
+          opacity: isHovered ? 1 : 0,
+        }}
+        className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300 z-[2]"
+      />
+
+      {/* 4. Subtle cyber grid watermark on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-[0.035] transition-opacity duration-500 pointer-events-none z-[2]"
+        style={{
+          backgroundImage: "linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+
+      {/* Card Content */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-5">
+          <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 group-hover:text-cyan-300 group-hover:shadow-[0_0_18px_rgba(56,189,248,0.35)] transition-all duration-300">
+            <Icon className="w-6 h-6" />
+          </div>
+          <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-md bg-white/5 text-blue-300 border border-white/10 group-hover:border-cyan-500/30 group-hover:text-cyan-200 transition-colors">
+            {item.highlight}
+          </span>
+        </div>
+
+        <h3 className="text-lg font-bold text-white mb-2.5 font-sans group-hover:text-cyan-100 transition-colors">
+          {item.title}
+        </h3>
+
+        <p className="text-sm text-slate-300 leading-relaxed font-normal">
+          {item.description}
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-slate-400 group-hover:text-slate-300 transition-colors">
+        <div className="flex items-center gap-2">
+          <Check className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Enterprise-grade protection</span>
+        </div>
+        <Sparkles className="w-3 h-3 text-cyan-400/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+    </motion.div>
+  );
+}
 
 export function FeaturesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Initial mount hydration simulation to guarantee zero layout shift
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const blueGlowY = useTransform(scrollYProgress, [0, 1], ["-70px", "70px"]);
+  const cyanGlowY = useTransform(scrollYProgress, [0, 1], ["70px", "-70px"]);
+
   const features = [
     {
       icon: Gauge,
@@ -44,10 +198,16 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
-      {/* Background Lighting */}
-      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-600/10 blur-[130px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} id="features" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Background Lighting with vertical parallax */}
+      <motion.div
+        style={{ y: blueGlowY }}
+        className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        style={{ y: cyanGlowY }}
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-600/10 blur-[130px] rounded-full pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -92,53 +252,37 @@ export function FeaturesSection() {
           </motion.p>
         </div>
 
-        {/* 6 Feature Cards Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {features.map((item, idx) => {
-            const Icon = item.icon;
-            return (
+        {/* 6 Feature Cards Grid with Magnetic Hover Glow & Loading Skeleton */}
+        <div className="mt-16">
+          <AnimatePresence mode="wait">
+            {isLoading ? (
               <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
-                whileHover={{ y: -4 }}
-                className="rounded-2xl bg-[#0f172a]/80 border border-white/10 p-7 flex flex-col justify-between hover:border-blue-500/40 transition-all hover:shadow-2xl hover:shadow-blue-950/30 group cursor-default"
+                key="skeleton-grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20 group-hover:text-blue-300 transition-all">
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-md bg-white/5 text-blue-300 border border-white/10">
-                      {item.highlight}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-2.5 font-sans group-hover:text-blue-200 transition-colors">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs font-mono text-slate-400">
-                  <Check className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Enterprise-grade protection</span>
-                </div>
+                {[0, 1, 2, 3, 4, 5].map((idx) => (
+                  <FeatureCardSkeleton key={idx} idx={idx} />
+                ))}
               </motion.div>
-            );
-          })}
-        </motion.div>
+            ) : (
+              <motion.div
+                key="real-grid"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {features.map((item, idx) => (
+                  <MagneticFeatureCard key={idx} item={item} idx={idx} />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Feature Comparison / Security Standards Strip */}
         <motion.div
@@ -164,14 +308,18 @@ export function FeaturesSection() {
 
           <div className="flex items-center gap-3">
             <a
+              onMouseEnter={() => cyberAudio.playHover()}
+              onClick={() => cyberAudio.playClick()}
               href="#scanner"
-              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-blue-300 transition-colors"
+              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-blue-300 transition-colors cursor-pointer"
             >
               Test Real-Time Scanner ↓
             </a>
             <a
+              onMouseEnter={() => cyberAudio.playHover()}
+              onClick={() => cyberAudio.playClick()}
               href="#download"
-              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-mono text-white font-semibold transition-all shadow-md"
+              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-mono text-white font-semibold transition-all shadow-md cursor-pointer"
             >
               Download APK Shield
             </a>

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Shield, ShieldAlert, ShieldCheck, Globe, Smartphone, Search, UploadCloud, RefreshCw, AlertTriangle, CheckCircle2, XCircle, FileCode, Lock, Zap, ArrowRight, Sparkles, ChevronRight, Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
+import { cyberAudio } from "../lib/audio";
+import { LiveScannerSkeleton } from "./Skeletons";
 
 interface ApkSample {
   label: string;
@@ -30,6 +32,25 @@ interface ApkSample {
 }
 
 export function LiveScannerDemo() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Initial mount hydration simulation to guarantee zero layout shift
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 550);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const scannerGlowY = useTransform(scrollYProgress, [0, 1], ["-90px", "90px"]);
+  const scannerSecondaryGlowY = useTransform(scrollYProgress, [0, 1], ["80px", "-80px"]);
+
   const [activeTab, setActiveTab] = useState<"apk" | "link">("apk");
 
   // APK State
@@ -140,6 +161,7 @@ export function LiveScannerDemo() {
   ];
 
   const handleSelectApkSample = async (sample: ApkSample) => {
+    cyberAudio.playScanEngage();
     setSelectedApkFile(sample.fileName);
     setIsScanningApk(true);
     setApkScanResult(null);
@@ -159,8 +181,10 @@ export function LiveScannerDemo() {
       const data = await res.json();
       if (data.success && data.result) {
         setApkScanResult(data.result);
+        cyberAudio.playSuccess();
       } else {
         setApkScanResult(sample.mockResult);
+        cyberAudio.playSuccess();
       }
     } catch (err) {
       console.warn("Backend scan fallback:", err);
@@ -174,6 +198,7 @@ export function LiveScannerDemo() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    cyberAudio.playScanEngage();
     setSelectedApkFile(file.name);
     setIsScanningApk(true);
     setApkScanResult(null);
@@ -195,6 +220,7 @@ export function LiveScannerDemo() {
         const data = await res.json();
         if (data.success && data.result) {
           setApkScanResult(data.result);
+          cyberAudio.playSuccess();
         }
       } catch (err) {
         console.error("Scan error:", err);
@@ -209,6 +235,7 @@ export function LiveScannerDemo() {
     const urlToTest = targetUrlOverride || inputUrl;
     if (!urlToTest) return;
 
+    cyberAudio.playScanEngage();
     setIsScanningUrl(true);
     setUrlScanResult(null);
     setScanStatusMsg("Scanning URL via VirusTotal v3 & Domain Phishing Heuristics...");
@@ -222,6 +249,7 @@ export function LiveScannerDemo() {
       const data = await res.json();
       if (data.success && data.result) {
         setUrlScanResult(data.result);
+        cyberAudio.playSuccess();
       }
     } catch (err) {
       console.error("URL scan error:", err);
@@ -231,9 +259,16 @@ export function LiveScannerDemo() {
   };
 
   return (
-    <section id="scanner" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
-      {/* Background radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-600/10 blur-[160px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} id="scanner" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Background radial glow with vertical parallax */}
+      <motion.div
+        style={{ y: scannerGlowY }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-600/10 blur-[160px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        style={{ y: scannerSecondaryGlowY }}
+        className="absolute bottom-10 right-1/4 w-[500px] h-[350px] bg-cyan-600/10 blur-[150px] rounded-full pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -288,7 +323,11 @@ export function LiveScannerDemo() {
         >
           <div className="p-1.5 rounded-2xl bg-[#0c1427] border border-white/10 flex items-center gap-2 shadow-xl">
             <button
-              onClick={() => setActiveTab("apk")}
+              onMouseEnter={() => cyberAudio.playHover()}
+              onClick={() => {
+                cyberAudio.playClick();
+                setActiveTab("apk");
+              }}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
                 activeTab === "apk"
                   ? "bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]"
@@ -300,7 +339,11 @@ export function LiveScannerDemo() {
             </button>
 
             <button
-              onClick={() => setActiveTab("link")}
+              onMouseEnter={() => cyberAudio.playHover()}
+              onClick={() => {
+                cyberAudio.playClick();
+                setActiveTab("link");
+              }}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-mono text-xs font-bold uppercase transition-all cursor-pointer ${
                 activeTab === "link"
                   ? "bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]"
@@ -313,15 +356,28 @@ export function LiveScannerDemo() {
           </div>
         </motion.div>
 
-        {/* Main Scanner Card Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="mt-8 max-w-5xl mx-auto rounded-3xl bg-[#0a101f]/95 border border-blue-500/20 p-6 sm:p-10 shadow-2xl backdrop-blur-xl"
-        >
-          {activeTab === "apk" ? (
+        {/* Main Scanner Card Container with Loading Skeleton */}
+        <div className="mt-8 max-w-5xl mx-auto">
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="scanner-skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <LiveScannerSkeleton />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="scanner-real"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="rounded-3xl bg-[#0a101f]/95 border border-blue-500/20 p-6 sm:p-10 shadow-2xl backdrop-blur-xl"
+              >
+                {activeTab === "apk" ? (
             /* APK SCANNER TAB */
             <div>
               {/* Presets Row */}
@@ -335,6 +391,7 @@ export function LiveScannerDemo() {
                   {apkSamples.map((s, idx) => (
                     <button
                       key={idx}
+                      onMouseEnter={() => cyberAudio.playHover()}
                       onClick={() => handleSelectApkSample(s)}
                       className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-blue-500/10 border border-white/10 hover:border-blue-500/40 text-xs font-mono text-slate-200 hover:text-white transition-all flex items-center gap-2 cursor-pointer"
                     >
@@ -620,7 +677,9 @@ export function LiveScannerDemo() {
                   {linkSamples.map((sample, idx) => (
                     <button
                       key={idx}
+                      onMouseEnter={() => cyberAudio.playHover()}
                       onClick={() => {
+                        cyberAudio.playClick();
                         setInputUrl(sample.url);
                         handleScanUrl(sample.url);
                       }}
@@ -650,6 +709,7 @@ export function LiveScannerDemo() {
                 </div>
 
                 <button
+                  onMouseEnter={() => cyberAudio.playHover()}
                   onClick={() => handleScanUrl()}
                   disabled={isScanningUrl}
                   className="w-full sm:w-auto px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shrink-0 transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] cursor-pointer"
@@ -814,7 +874,10 @@ export function LiveScannerDemo() {
             </div>
           )}
         </motion.div>
-      </div>
-    </section>
+      )}
+    </AnimatePresence>
+  </div>
+</div>
+</section>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   UploadCloud,
   SearchCode,
@@ -9,10 +9,18 @@ import {
   Sparkles,
   MousePointerClick,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
 
 export function HowItWorksSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const ambientGlowY = useTransform(scrollYProgress, [0, 1], ["-80px", "80px"]);
+  const ambientCyanGlowY = useTransform(scrollYProgress, [0, 1], ["60px", "-60px"]);
 
 
   const steps = [
@@ -76,9 +84,16 @@ export function HowItWorksSection() {
   const trackerSlots = Array.from({ length: 25 }, (_, i) => `tr-${i + 1}`);
 
   return (
-    <section id="how-it-works" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} id="how-it-works" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Background Ambient Glow with vertical parallax */}
+      <motion.div
+        style={{ y: ambientGlowY }}
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        style={{ y: ambientCyanGlowY }}
+        className="absolute bottom-10 right-10 w-[450px] h-[300px] bg-cyan-600/10 blur-[140px] rounded-full pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}

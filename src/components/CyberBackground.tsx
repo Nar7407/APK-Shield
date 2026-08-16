@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 interface Emitter {
   id: number;
@@ -13,6 +13,18 @@ interface Emitter {
 
 export function CyberBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Parallax Scroll Tracking for Deep Background Layers
+  const { scrollYProgress } = useScroll();
+
+  // Multi-tier subtle vertical parallax transforms
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const orb1Y = useTransform(scrollYProgress, [0, 1], ["0px", "280px"]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], ["0px", "-240px"]);
+  const orb3Y = useTransform(scrollYProgress, [0, 1], ["0px", "190px"]);
+  const tracksY = useTransform(scrollYProgress, [0, 1], ["0px", "-140px"]);
+  const packetsY = useTransform(scrollYProgress, [0, 1], ["0px", "-220px"]);
+  const emittersY = useTransform(scrollYProgress, [0, 1], ["0px", "90px"]);
 
   // 1. Pulsing Light Emitters (Strategic Radar Sonar Nodes)
   const emitters: Emitter[] = useMemo(() => [
@@ -70,7 +82,7 @@ export function CyberBackground() {
     ];
 
     let particles: ParticleDot[] = [];
-    const count = 75; // Optimal balance between density and performance
+    const count = 75;
 
     const mouse = {
       x: -1000,
@@ -107,7 +119,7 @@ export function CyberBackground() {
 
       ctx.scale(dpr, dpr);
 
-      // Re-distribute particles if canvas was resized
+      // Distribute particles if canvas was resized or empty
       if (particles.length === 0) {
         particles = Array.from({ length: count }, () => {
           const col = palette[Math.floor(Math.random() * palette.length)];
@@ -115,7 +127,7 @@ export function CyberBackground() {
             x: Math.random() * width,
             y: Math.random() * height,
             vx: (Math.random() - 0.5) * 0.45,
-            vy: (Math.random() - 0.5) * 0.45 - 0.12, // subtle upward drift
+            vy: (Math.random() - 0.5) * 0.45 - 0.12,
             radius: Math.random() * 2 + 1.2,
             baseAlpha: Math.random() * 0.5 + 0.3,
             pulseSpeed: Math.random() * 0.02 + 0.008,
@@ -220,7 +232,7 @@ export function CyberBackground() {
         ctx.shadowColor = p.color;
         ctx.shadowBlur = 8;
         ctx.fill();
-        ctx.shadowBlur = 0; // Reset for next items
+        ctx.shadowBlur = 0;
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -241,19 +253,24 @@ export function CyberBackground() {
       aria-hidden="true"
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
     >
-      {/* 1. Cyber Digital Grid */}
-      <div
+      {/* 1. Cyber Digital Grid with subtle vertical parallax scroll */}
+      <motion.div
+        style={{ y: gridY }}
         className="absolute inset-0 opacity-[0.038]"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(56, 189, 248, 0.45) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(56, 189, 248, 0.45) 1px, transparent 1px)
-          `,
-          backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(ellipse at center, black 65%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse at center, black 65%, transparent 100%)",
-        }}
-      />
+      >
+        <div
+          className="w-full h-[120%]"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(56, 189, 248, 0.45) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(56, 189, 248, 0.45) 1px, transparent 1px)
+            `,
+            backgroundSize: "64px 64px",
+            maskImage: "radial-gradient(ellipse at center, black 65%, transparent 100%)",
+            WebkitMaskImage: "radial-gradient(ellipse at center, black 65%, transparent 100%)",
+          }}
+        />
+      </motion.div>
 
       {/* 2. Vertically Sweeping Cyber Laser Radar Beam */}
       <motion.div
@@ -270,51 +287,19 @@ export function CyberBackground() {
         style={{ filter: "blur(10px)" }}
       />
 
-      {/* 3. Deep Atmospheric Morphing Ambient Glow Orbs */}
+      {/* 3. Deep Atmospheric Ambient Glow Orbs with Independent Vertical Parallax */}
       <motion.div
-        animate={{
-          x: [0, 70, -50, 0],
-          y: [0, -60, 50, 0],
-          scale: [1, 1.3, 0.9, 1],
-          opacity: [0.14, 0.24, 0.16, 0.14],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        style={{ y: orb1Y }}
         className="absolute top-[10%] -left-24 w-[600px] h-[600px] rounded-full bg-cyan-600/20 blur-[150px]"
       />
 
       <motion.div
-        animate={{
-          x: [0, -80, 60, 0],
-          y: [0, 70, -40, 0],
-          scale: [1, 1.2, 0.85, 1],
-          opacity: [0.12, 0.22, 0.14, 0.12],
-        }}
-        transition={{
-          duration: 24,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
+        style={{ y: orb2Y }}
         className="absolute top-[44%] -right-28 w-[650px] h-[650px] rounded-full bg-blue-600/20 blur-[160px]"
       />
 
       <motion.div
-        animate={{
-          x: [0, 60, -70, 0],
-          y: [0, -50, 60, 0],
-          scale: [1, 1.25, 0.92, 1],
-          opacity: [0.09, 0.18, 0.11, 0.09],
-        }}
-        transition={{
-          duration: 22,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 4,
-        }}
+        style={{ y: orb3Y }}
         className="absolute top-[76%] left-[18%] w-[550px] h-[550px] rounded-full bg-indigo-600/15 blur-[140px]"
       />
 
@@ -324,132 +309,138 @@ export function CyberBackground() {
         className="absolute inset-0 w-full h-full pointer-events-none z-[1]"
       />
 
-      {/* 5. Pulsing Light Emitters with Concentric Expanding Sonar Rings */}
-      {emitters.map((emitter) => (
-        <div
-          key={emitter.id}
-          style={{
-            top: emitter.top,
-            ...(emitter.left ? { left: emitter.left } : { right: emitter.right }),
-          }}
-          className="absolute z-10 flex items-center justify-center pointer-events-none"
-        >
-          {/* Emitter Central Glowing Core */}
+      {/* 5. Pulsing Light Emitters with Parallax Shift */}
+      <motion.div style={{ y: emittersY }} className="absolute inset-0 pointer-events-none z-10">
+        {emitters.map((emitter) => (
+          <div
+            key={emitter.id}
+            style={{
+              top: emitter.top,
+              ...(emitter.left ? { left: emitter.left } : { right: emitter.right }),
+            }}
+            className="absolute flex items-center justify-center pointer-events-none"
+          >
+            {/* Emitter Central Glowing Core */}
+            <motion.div
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [0.7, 1, 0.7],
+                boxShadow: [
+                  `0 0 10px ${emitter.color}`,
+                  `0 0 22px ${emitter.color}`,
+                  `0 0 10px ${emitter.color}`,
+                ],
+              }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: emitter.pulseDelay,
+              }}
+              style={{ backgroundColor: emitter.color }}
+              className="w-2.5 h-2.5 rounded-full"
+            />
+
+            {/* Sonar Ring 1 */}
+            <motion.div
+              animate={{
+                scale: [1, 4.5],
+                opacity: [0.8, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: emitter.pulseDelay,
+              }}
+              style={{ borderColor: emitter.color }}
+              className="absolute w-4 h-4 rounded-full border border-opacity-70"
+            />
+
+            {/* Sonar Ring 2 */}
+            <motion.div
+              animate={{
+                scale: [1, 6],
+                opacity: [0.5, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: emitter.pulseDelay + 0.8,
+              }}
+              style={{ borderColor: emitter.color }}
+              className="absolute w-4 h-4 rounded-full border border-dashed border-opacity-40"
+            />
+
+            {/* Micro Telemetry HUD label */}
+            <span className="absolute -bottom-4 text-[8px] font-mono tracking-widest text-slate-500/70 whitespace-nowrap hidden lg:inline-block">
+              {emitter.label}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* 6. Floating Threat Intel Packets with Parallax Shift */}
+      <motion.div style={{ y: packetsY }} className="absolute inset-0 pointer-events-none z-10">
+        {securityPackets.map((pkt, idx) => (
           <motion.div
+            key={`pkt-${idx}`}
+            style={{
+              top: pkt.top,
+              ...(pkt.left ? { left: pkt.left } : { right: pkt.right }),
+            }}
             animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.7, 1, 0.7],
-              boxShadow: [
-                `0 0 10px ${emitter.color}`,
-                `0 0 22px ${emitter.color}`,
-                `0 0 10px ${emitter.color}`,
-              ],
+              y: [0, -18, 0],
+              opacity: [0.2, 0.55, 0.2],
             }}
             transition={{
-              duration: 2.4,
+              duration: 8 + idx,
               repeat: Infinity,
+              delay: pkt.delay,
               ease: "easeInOut",
-              delay: emitter.pulseDelay,
             }}
-            style={{ backgroundColor: emitter.color }}
-            className="w-2.5 h-2.5 rounded-full"
-          />
+            className="absolute hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/70 border border-cyan-500/25 backdrop-blur-md shadow-sm"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+            <span className="text-[10px] font-mono font-medium tracking-wider text-cyan-300/90 uppercase">
+              {pkt.text}
+            </span>
+          </motion.div>
+        ))}
+      </motion.div>
 
-          {/* Sonar Ring 1 */}
-          <motion.div
-            animate={{
-              scale: [1, 4.5],
-              opacity: [0.8, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeOut",
-              delay: emitter.pulseDelay,
-            }}
-            style={{ borderColor: emitter.color }}
-            className="absolute w-4 h-4 rounded-full border border-opacity-70"
-          />
-
-          {/* Sonar Ring 2 */}
-          <motion.div
-            animate={{
-              scale: [1, 6],
-              opacity: [0.5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeOut",
-              delay: emitter.pulseDelay + 0.8,
-            }}
-            style={{ borderColor: emitter.color }}
-            className="absolute w-4 h-4 rounded-full border border-dashed border-opacity-40"
-          />
-
-          {/* Micro Telemetry HUD label */}
-          <span className="absolute -bottom-4 text-[8px] font-mono tracking-widest text-slate-500/70 whitespace-nowrap hidden lg:inline-block">
-            {emitter.label}
-          </span>
-        </div>
-      ))}
-
-      {/* 6. Floating Threat Intel Packets */}
-      {securityPackets.map((pkt, idx) => (
-        <motion.div
-          key={`pkt-${idx}`}
-          style={{
-            top: pkt.top,
-            ...(pkt.left ? { left: pkt.left } : { right: pkt.right }),
-          }}
-          animate={{
-            y: [0, -18, 0],
-            opacity: [0.2, 0.55, 0.2],
-          }}
-          transition={{
-            duration: 8 + idx,
-            repeat: Infinity,
-            delay: pkt.delay,
-            ease: "easeInOut",
-          }}
-          className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/70 border border-cyan-500/25 backdrop-blur-md shadow-sm"
+      {/* 7. Dynamic Circuit Tracks with Glow Gradient and Parallax Offset */}
+      <motion.div style={{ y: tracksY }} className="absolute inset-0 pointer-events-none">
+        <svg
+          className="w-full h-[120%] opacity-25 pointer-events-none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-          <span className="text-[10px] font-mono font-medium tracking-wider text-cyan-300/90 uppercase">
-            {pkt.text}
-          </span>
-        </motion.div>
-      ))}
+          <defs>
+            <linearGradient id="cyber-glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.2" />
+            </linearGradient>
+          </defs>
 
-      {/* 7. Dynamic Circuit Tracks with Glow Gradient */}
-      <svg
-        className="absolute inset-0 w-full h-full opacity-25 pointer-events-none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="cyber-glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.2" />
-            <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.2" />
-          </linearGradient>
-        </defs>
+          <path
+            d="M 60 0 L 60 400 L 100 440 L 100 1200 L 50 1250 L 50 2400 L 90 2440 L 90 3800"
+            fill="none"
+            stroke="url(#cyber-glow-grad)"
+            strokeWidth="1.5"
+            strokeDasharray="5 9"
+          />
 
-        <path
-          d="M 60 0 L 60 400 L 100 440 L 100 1200 L 50 1250 L 50 2400 L 90 2440 L 90 3800"
-          fill="none"
-          stroke="url(#cyber-glow-grad)"
-          strokeWidth="1.5"
-          strokeDasharray="5 9"
-        />
-
-        <path
-          d="M calc(100% - 60px) 100 L calc(100% - 100px) 160 L calc(100% - 100px) 900 L calc(100% - 50px) 950 L calc(100% - 50px) 2100 L calc(100% - 90px) 2150 L calc(100% - 90px) 3800"
-          fill="none"
-          stroke="url(#cyber-glow-grad)"
-          strokeWidth="1.5"
-          strokeDasharray="5 9"
-        />
-      </svg>
+          <path
+            d="M calc(100% - 60px) 100 L calc(100% - 100px) 160 L calc(100% - 100px) 900 L calc(100% - 50px) 950 L calc(100% - 50px) 2100 L calc(100% - 90px) 2150 L calc(100% - 90px) 3800"
+            fill="none"
+            stroke="url(#cyber-glow-grad)"
+            strokeWidth="1.5"
+            strokeDasharray="5 9"
+          />
+        </svg>
+      </motion.div>
     </div>
   );
 }

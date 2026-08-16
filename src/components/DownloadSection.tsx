@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Smartphone, Monitor, Download, ShieldCheck, Check, Copy, AlertCircle, Sparkles, HardDrive, Shield, Key } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
+import { cyberAudio } from "../lib/audio";
 
 export function DownloadSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const downloadGlowY = useTransform(scrollYProgress, [0, 1], ["-70px", "70px"]);
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
 
   const androidSha256 = "8f4a1c9e7b2d5a3f1e6c8a0d9b4f2e7a1c3b5d7e9f0a2c4e6b8d0a2f4c6e8b0a";
@@ -16,9 +24,12 @@ export function DownloadSection() {
   };
 
   return (
-    <section id="download" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
-      {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-blue-600/15 blur-[150px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} id="download" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Ambient background glow with vertical parallax */}
+      <motion.div
+        style={{ y: downloadGlowY }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-blue-600/15 blur-[150px] rounded-full pointer-events-none"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -121,7 +132,11 @@ export function DownloadSection() {
                 <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
                   <span>SHA-256 CHECKSUM</span>
                   <button
-                    onClick={() => handleCopy(androidSha256, "android")}
+                    onMouseEnter={() => cyberAudio.playHover()}
+                    onClick={() => {
+                      cyberAudio.playClick();
+                      handleCopy(androidSha256, "android");
+                    }}
                     className="text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
                   >
                     {copiedHash === "android" ? (
@@ -146,6 +161,8 @@ export function DownloadSection() {
             {/* Download Button */}
             <div className="mt-8">
               <a
+                onMouseEnter={() => cyberAudio.playHover()}
+                onClick={() => cyberAudio.playClick()}
                 href="/downloads/apkshield.apk"
                 download
                 className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base font-sans tracking-wide transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:shadow-[0_0_35px_rgba(37,99,235,0.6)] active:scale-95 cursor-pointer"
@@ -206,7 +223,11 @@ export function DownloadSection() {
                 <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
                   <span>SHA-256 CHECKSUM</span>
                   <button
-                    onClick={() => handleCopy(windowsSha256, "windows")}
+                    onMouseEnter={() => cyberAudio.playHover()}
+                    onClick={() => {
+                      cyberAudio.playClick();
+                      handleCopy(windowsSha256, "windows");
+                    }}
                     className="text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
                   >
                     {copiedHash === "windows" ? (
@@ -231,6 +252,8 @@ export function DownloadSection() {
             {/* Download Button */}
             <div className="mt-8">
               <a
+                onMouseEnter={() => cyberAudio.playHover()}
+                onClick={() => cyberAudio.playClick()}
                 href="/downloads/apkshield.exe"
                 download
                 className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-blue-500/50 text-white font-bold text-base font-sans tracking-wide transition-all shadow-lg active:scale-95 cursor-pointer"

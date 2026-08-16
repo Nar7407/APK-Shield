@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { AlertOctagon, Smartphone, Link as LinkIcon, MessageSquare, KeyRound, ShieldAlert, ArrowRight, XCircle, AlertTriangle, Check, RefreshCw, Eye, Lock, ExternalLink, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
 
 export function ProblemSection() {
   const [activeStep, setActiveStep] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgRedY = useTransform(scrollYProgress, [0, 1], ["-60px", "60px"]);
+  const bgBlueY = useTransform(scrollYProgress, [0, 1], ["60px", "-60px"]);
+  const gridShiftY = useTransform(scrollYProgress, [0, 1], ["0px", "40px"]);
 
   const flipCardsData = [
     {
@@ -65,10 +75,24 @@ export function ProblemSection() {
   ];
 
   return (
-    <section id="problem" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-red-600/10 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 blur-[130px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} id="problem" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Background ambient lighting with vertical parallax */}
+      <motion.div
+        style={{ y: bgRedY }}
+        className="absolute top-1/2 left-0 w-96 h-96 bg-red-600/10 blur-[130px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        style={{ y: bgBlueY }}
+        className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 blur-[130px] rounded-full pointer-events-none"
+      />
+      <motion.div
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: "linear-gradient(to right, #ef4444 1px, transparent 1px), linear-gradient(to bottom, #ef4444 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          y: gridShiftY,
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}

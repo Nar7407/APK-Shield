@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { ChevronDown, HelpCircle, Shield, Sparkles, Lock } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
+import { cyberAudio } from "../lib/audio";
 
 export function FaqSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const faqGlowY = useTransform(scrollYProgress, [0, 1], ["-60px", "60px"]);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
@@ -34,7 +42,13 @@ export function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+    <section ref={sectionRef} id="faq" className="py-24 bg-transparent relative overflow-hidden border-t border-white/5">
+      {/* Background ambient lighting with parallax */}
+      <motion.div
+        style={{ y: faqGlowY }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-blue-600/10 blur-[150px] rounded-full pointer-events-none"
+      />
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center">
@@ -102,7 +116,11 @@ export function FaqSection() {
                 }`}
               >
                 <button
-                  onClick={() => toggleFaq(index)}
+                  onMouseEnter={() => cyberAudio.playHover()}
+                  onClick={() => {
+                    cyberAudio.playClick();
+                    toggleFaq(index);
+                  }}
                   className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <span className="text-base sm:text-lg font-bold text-white font-sans">
