@@ -261,7 +261,13 @@ export function LiveScannerDemo() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="mt-12 flex justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-12 flex justify-center"
+        >
           <div className="p-1.5 rounded-2xl bg-[#0c1427] border border-white/10 flex items-center gap-2 shadow-xl">
             <button
               onClick={() => setActiveTab("apk")}
@@ -287,10 +293,16 @@ export function LiveScannerDemo() {
               <span>Phishing Link Inspector</span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Main Scanner Card Container */}
-        <div className="mt-8 max-w-5xl mx-auto rounded-3xl bg-[#0a101f]/95 border border-blue-500/20 p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-8 max-w-5xl mx-auto rounded-3xl bg-[#0a101f]/95 border border-blue-500/20 p-6 sm:p-10 shadow-2xl backdrop-blur-xl"
+        >
           {activeTab === "apk" ? (
             /* APK SCANNER TAB */
             <div>
@@ -783,7 +795,7 @@ export function LiveScannerDemo() {
               )}
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

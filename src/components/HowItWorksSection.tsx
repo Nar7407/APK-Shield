@@ -9,6 +9,7 @@ import {
   Sparkles,
   MousePointerClick,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { LiquidText } from "./LiquidText";
 
 export function HowItWorksSection() {
@@ -110,16 +111,29 @@ export function HowItWorksSection() {
         </div>
 
         {/* 5-Step 3D Interactive Tracker Cards Grid */}
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 lg:gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-16 flex flex-wrap items-center justify-center gap-8 lg:gap-6"
+        >
           {steps.map((step, idx) => {
             const Icon = step.icon;
             return (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
                 className="flex flex-col items-center group"
               >
                 {/* 3D Tracker Card Container */}
-                <div className="container noselect">
+                <div
+                  className="container noselect"
+                  style={{ animationDelay: `${idx * 0.7}s` }}
+                >
                   <div className="canvas">
                     {trackerSlots.map((tr) => (
                       <div key={tr} className={`tracker ${tr}`} />
@@ -195,13 +209,19 @@ export function HowItWorksSection() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Interactive Verdict Sample Showcase */}
-        <div className="mt-14 max-w-4xl mx-auto rounded-2xl bg-black/50 border border-white/10 p-6 sm:p-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-14 max-w-4xl mx-auto rounded-2xl bg-black/50 border border-white/10 p-6 sm:p-8"
+        >
           <div className="text-center mb-6">
             <h3 className="text-lg font-bold text-white font-sans">
               Sample Verdict Outputs You Can Expect
@@ -254,7 +274,7 @@ export function HowItWorksSection() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

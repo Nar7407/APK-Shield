@@ -61,12 +61,22 @@ export function FaqSection() {
         </div>
 
         {/* Accordion List */}
-        <div className="mt-12 space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-12 space-y-4"
+        >
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
                 className={`rounded-2xl border transition-all overflow-hidden ${
                   isOpen
                     ? "bg-[#0d162b] border-blue-500/40 shadow-xl shadow-blue-950/30"
@@ -105,13 +115,19 @@ export function FaqSection() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Security Assurance Footer Card */}
-        <div className="mt-12 p-6 rounded-2xl bg-black/40 border border-white/10 flex items-center gap-4 text-left">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-12 p-6 rounded-2xl bg-black/40 border border-white/10 flex items-center gap-4 text-left"
+        >
           <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 shrink-0">
             <Lock className="w-6 h-6" />
           </div>
@@ -123,7 +139,7 @@ export function FaqSection() {
               APK Shield adheres to international privacy regulations. All static inspection and telemetry payloads remain encrypted in transit.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

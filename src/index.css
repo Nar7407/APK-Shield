@@ -1,29 +1,72 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --color-background: var(--bg-0);
+  --color-foreground: var(--text-100);
+}
+
+:root {
+  --bg-0: #070b14;
+  --bg-100: #0b1329;
+  --bg-200: #111c3d;
+  --bg-300: #1e293b;
+  --text-100: #f8fafc;
+  --text-200: #e2e8f0;
+  --text-300: #94a3b8;
+  --text-400: #64748b;
+  --radius: 0.5rem;
+  --background: #070b14;
+  --foreground: #f8fafc;
+  --card: #0b1329;
+  --card-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+.dark {
+  --background: #070b14;
+  --foreground: #f8fafc;
+  --card: #0b1329;
+  --card-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-in-1 {
+  animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.animate-fade-slide-in-2 {
+  animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.animate-fade-slide-in-3 {
+  animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.animate-fade-slide-in-4 {
+  animation: fadeSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
 @layer base {
-  :root {
-    --background: #020202;
-    --foreground: #ffffff;
-    --card: #111111;
-    --card-foreground: #ffffff;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-    --border: rgba(255, 255, 255, 0.1);
-  }
-
-  .dark {
-    --background: #020202;
-    --foreground: #ffffff;
-    --card: #111111;
-    --card-foreground: #ffffff;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-    --border: rgba(255, 255, 255, 0.1);
-  }
-
   body {
-    background-color: #020202;
-    color: #ffffff;
+    background-color: #070b14;
+    color: #f8fafc;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     overflow-x: hidden;
   }
@@ -165,11 +208,26 @@
 
 /* 3D Interactive Tracker Tilt Card Styles */
 /*works janky on mobile :<*/
+@keyframes tracker-bob {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
 .container {
   position: relative;
   width: 220px;
   height: 280px;
   transition: 200ms;
+  animation: tracker-bob 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.container:hover {
+  animation-play-state: paused;
 }
 
 .container:active {

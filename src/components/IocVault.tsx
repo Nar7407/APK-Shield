@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, Database, Copy, Check, ShieldAlert, Cpu, Sparkles, ExternalLink, RefreshCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { playHoverBlip, playScanStartSound } from "@/lib/sound";
 import { FlipText } from "./ui/FlipText";
 
@@ -90,7 +91,14 @@ export function IocVault() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+    <motion.div
+      id="ioc-vault"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6 }}
+      className="w-full max-w-7xl mx-auto px-4 py-8"
+    >
       <div className="relative rounded-2xl bg-[#111111] border border-white/10 shadow-2xl p-6 md:p-8 overflow-hidden group">
         {/* Sleek top gradient highlight bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent pointer-events-none" />
@@ -130,8 +138,11 @@ export function IocVault() {
         <div className="mt-6 space-y-3">
           {filteredIocs.length > 0 ? (
             filteredIocs.map((item, idx) => (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
                 className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
@@ -186,7 +197,7 @@ export function IocVault() {
                     )}
                   </button>
                 </div>
-              </div>
+              </motion.div>
             ))
           ) : (
             <div className="p-8 text-center rounded-xl bg-black border border-white/10 text-white/40 font-mono text-xs">
@@ -195,7 +206,7 @@ export function IocVault() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

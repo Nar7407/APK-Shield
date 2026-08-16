@@ -96,9 +96,23 @@ export function ProblemSection() {
         </div>
 
         {/* Threat Visual Photo Cards Showcase */}
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, staggerChildren: 0.1 }}
+          className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {flipCardsData.map((item, idx) => (
-            <div key={idx} className="flex flex-col items-center">
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              whileHover={{ y: -4 }}
+              className="flex flex-col items-center"
+            >
               {/* Interactive 3D Flip Card */}
               <div className="card card-cyber cursor-pointer w-full group">
                 <svg viewBox="0 0 24 24" className="text-blue-400">
@@ -131,12 +145,18 @@ export function ProblemSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Threat Anatomy Graphic Banner with Real-time Photo Evidence */}
-        <div className="mt-16 rounded-3xl bg-[#0b1122] border border-blue-500/20 p-6 sm:p-10 shadow-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-16 rounded-3xl bg-[#0b1122] border border-blue-500/20 p-6 sm:p-10 shadow-2xl"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pb-8 border-b border-white/10">
             <div className="lg:col-span-7 space-y-4">
               <span className="text-xs font-mono uppercase tracking-widest text-blue-400 font-bold">
@@ -240,7 +260,7 @@ export function ProblemSection() {
               Get Protected Now
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

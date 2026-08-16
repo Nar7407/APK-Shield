@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Smartphone, Monitor, Download, ShieldCheck, Check, Copy, AlertCircle, Sparkles, HardDrive, Shield, Key } from "lucide-react";
+import { motion } from "framer-motion";
 import { LiquidText } from "./LiquidText";
 
 export function DownloadSection() {
@@ -45,9 +46,19 @@ export function DownloadSection() {
         </div>
 
         {/* Two Large Download Cards Side by Side */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto"
+        >
           {/* Android Card */}
-          <div className="relative rounded-3xl bg-[#0f172a]/90 border border-blue-500/30 hover:border-blue-400/60 p-8 sm:p-10 flex flex-col justify-between transition-all hover:shadow-2xl hover:shadow-blue-950/50 group">
+          <motion.div
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.2 }}
+            className="relative rounded-3xl bg-[#0f172a]/90 border border-blue-500/30 hover:border-blue-400/60 p-8 sm:p-10 flex flex-col justify-between transition-colors hover:shadow-2xl hover:shadow-blue-950/50 group"
+          >
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 group-hover:scale-105 transition-transform">
@@ -125,10 +136,14 @@ export function DownloadSection() {
                 <span>Download APK (14.2 MB)</span>
               </a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Windows Card */}
-          <div className="relative rounded-3xl bg-[#0f172a]/90 border border-white/10 hover:border-blue-400/60 p-8 sm:p-10 flex flex-col justify-between transition-all hover:shadow-2xl hover:shadow-blue-950/50 group">
+          <motion.div
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.2 }}
+            className="relative rounded-3xl bg-[#0f172a]/90 border border-white/10 hover:border-blue-400/60 p-8 sm:p-10 flex flex-col justify-between transition-colors hover:shadow-2xl hover:shadow-blue-950/50 group"
+          >
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-slate-200 group-hover:text-blue-400 group-hover:scale-105 transition-all">
@@ -206,18 +221,24 @@ export function DownloadSection() {
                 <span>Download EXE (38.6 MB)</span>
               </a>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Small Official Trust Note */}
-        <div className="mt-12 max-w-2xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-12 max-w-2xl mx-auto text-center"
+        >
           <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-xs font-mono text-slate-300">
             <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
             <span>
               Always verify file hashes and only download APK Shield from this official page.
             </span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

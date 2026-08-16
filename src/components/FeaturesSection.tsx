@@ -75,13 +75,24 @@ export function FeaturesSection() {
         </div>
 
         {/* 6 Feature Cards Grid */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {features.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="rounded-2xl bg-[#0f172a]/80 border border-white/10 p-7 flex flex-col justify-between hover:border-blue-500/40 hover:-translate-y-1 transition-all hover:shadow-2xl hover:shadow-blue-950/30 group"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                whileHover={{ y: -4 }}
+                className="rounded-2xl bg-[#0f172a]/80 border border-white/10 p-7 flex flex-col justify-between hover:border-blue-500/40 transition-all hover:shadow-2xl hover:shadow-blue-950/30 group cursor-default"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
@@ -106,13 +117,19 @@ export function FeaturesSection() {
                   <Check className="w-3.5 h-3.5 text-blue-400" />
                   <span>Enterprise-grade protection</span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Feature Comparison / Security Standards Strip */}
-        <div className="mt-14 p-6 rounded-2xl bg-black/40 border border-white/10 flex flex-wrap items-center justify-between gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-14 p-6 rounded-2xl bg-black/40 border border-white/10 flex flex-wrap items-center justify-between gap-6"
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
               <Lock className="w-5 h-5" />
@@ -141,7 +158,7 @@ export function FeaturesSection() {
               Download APK Shield
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
