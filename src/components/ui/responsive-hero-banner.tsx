@@ -314,6 +314,20 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                   <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
                 )}
               </button>
+
+              {/* Desktop Menu Drawer Trigger (Three Lines / Hamburger) */}
+              <button
+                onClick={() => {
+                  cyberAudio.playClick();
+                  setMobileMenuOpen(true);
+                }}
+                onMouseEnter={() => cyberAudio.playHover()}
+                title="Open Navigation Menu Drawer"
+                aria-label="Open navigation menu drawer"
+                className="ml-1 p-2 rounded-full bg-slate-900/80 border border-white/10 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+              >
+                <Menu className="w-4 h-4 text-slate-200" />
+              </button>
             </nav>
 
             {/* Medium screen simplified button & menu trigger */}
@@ -358,7 +372,7 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
             </button>
           </div>
 
-          {/* Full-Screen High-Tech Cyber Drawer Overlay */}
+          {/* Full-Screen High-Tech Cyber Drawer Overlay (Available on all screen sizes including desktop) */}
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
@@ -366,70 +380,73 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-[100] lg:hidden bg-[#070b14]/95 backdrop-blur-3xl flex flex-col justify-between overflow-y-auto"
+                className="fixed inset-0 z-[100] bg-[#070b14]/95 backdrop-blur-3xl flex flex-col justify-between overflow-y-auto"
               >
                 {/* Background Cyber Lights & Atmosphere */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.08),transparent_70%)] pointer-events-none" />
 
                 {/* Drawer Header */}
-                <div className="relative z-10 p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-slate-950/40 backdrop-blur-md">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-[1px] shadow-[0_0_15px_rgba(56,189,248,0.4)]">
-                      <div className="w-full h-full bg-[#070b14] rounded-[11px] flex items-center justify-center">
-                        <Shield className="w-5 h-5 text-cyan-400" />
+                <div className="relative z-10 p-5 sm:p-6 border-b border-white/10 bg-slate-950/60 backdrop-blur-md">
+                  <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 p-[1px] shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                        <div className="w-full h-full bg-[#070b14] rounded-[11px] flex items-center justify-center">
+                          <Shield className="w-5 h-5 text-cyan-400" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-extrabold text-base tracking-tight text-white flex items-center gap-2 font-mono">
+                          APK <span className="text-cyan-400">SHIELD</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-sans font-medium">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            ONLINE
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 font-mono">AI Threat Defense Engine v2.5</p>
                       </div>
                     </div>
-                    <div>
-                      <div className="font-extrabold text-base tracking-tight text-white flex items-center gap-2 font-mono">
-                        APK <span className="text-cyan-400">SHIELD</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-sans font-medium">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          ONLINE
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-400 font-mono">AI Threat Defense Engine v2.5</p>
-                    </div>
-                  </div>
 
-                  {/* Header Controls: Audio Mute & Close Drawer */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={toggleMute}
-                      onMouseEnter={() => cyberAudio.playHover()}
-                      title={isMuted ? "Sound Effects Muted" : "Cyber Audio FX Enabled"}
-                      aria-label="Toggle cyber audio effects"
-                      className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer"
-                    >
-                      {isMuted ? (
-                        <VolumeX className="w-4 h-4 text-slate-500" />
-                      ) : (
-                        <Volume2 className="w-4 h-4 text-cyan-400" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => {
-                        cyberAudio.playClick();
-                        setMobileMenuOpen(false);
-                      }}
-                      onMouseEnter={() => cyberAudio.playHover()}
-                      className="p-2.5 rounded-xl bg-slate-800/90 border border-white/10 text-slate-200 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer shadow-md"
-                      aria-label="Close menu drawer"
-                    >
-                      <X className="w-5 h-5 text-cyan-400" />
-                    </button>
+                    {/* Header Controls: Audio Mute & Close Drawer */}
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        onClick={toggleMute}
+                        onMouseEnter={() => cyberAudio.playHover()}
+                        title={isMuted ? "Sound Effects Muted" : "Cyber Audio FX Enabled"}
+                        aria-label="Toggle cyber audio effects"
+                        className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer"
+                      >
+                        {isMuted ? (
+                          <VolumeX className="w-4 h-4 text-slate-500" />
+                        ) : (
+                          <Volume2 className="w-4 h-4 text-cyan-400" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          cyberAudio.playClick();
+                          setMobileMenuOpen(false);
+                        }}
+                        onMouseEnter={() => cyberAudio.playHover()}
+                        className="p-2.5 rounded-xl bg-slate-800/90 border border-white/10 text-slate-200 hover:text-white hover:border-cyan-500/40 transition-all cursor-pointer shadow-md flex items-center gap-1.5 font-mono text-xs"
+                        aria-label="Close menu drawer"
+                      >
+                        <X className="w-4 h-4 text-cyan-400" />
+                        <span className="hidden sm:inline text-slate-300">Close</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Drawer Body: Staggered Navigation Links */}
-                <div className="relative z-10 px-5 py-6 sm:px-8 space-y-3 flex-1">
+                {/* Drawer Body: Staggered Navigation Links in Responsive Bento Grid */}
+                <div className="relative z-10 px-5 py-6 sm:px-8 flex-1 max-w-5xl mx-auto w-full space-y-4">
                   <div className="text-[11px] font-mono uppercase tracking-widest text-slate-400 mb-2 flex items-center justify-between">
                     <span>Security Modules & Navigation</span>
                     <span className="text-cyan-400/80">6 Direct Endpoints</span>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {navLinks.map((link, index) => {
                       const meta = navMeta[link.href] || {
                         icon: ArrowRight,
@@ -511,39 +528,41 @@ export const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25, duration: 0.3 }}
-                  className="relative z-10 p-5 sm:p-6 border-t border-white/10 bg-slate-950/90 space-y-3"
+                  className="relative z-10 p-5 sm:p-6 border-t border-white/10 bg-slate-950/90"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <a
-                      href="#scanner"
-                      onMouseEnter={() => cyberAudio.playHover()}
-                      onClick={(e) => {
-                        cyberAudio.playClick();
-                        handleSmoothScroll(e, "#scanner");
-                      }}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-3 text-xs sm:text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:shadow-cyan-500/50 transition-all cursor-pointer"
-                    >
-                      <Search className="w-4 h-4" />
-                      <span>Launch Live Scanner</span>
-                    </a>
+                  <div className="max-w-5xl mx-auto w-full space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <a
+                        href="#scanner"
+                        onMouseEnter={() => cyberAudio.playHover()}
+                        onClick={(e) => {
+                          cyberAudio.playClick();
+                          handleSmoothScroll(e, "#scanner");
+                        }}
+                        className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-3 text-xs sm:text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:shadow-cyan-500/50 transition-all cursor-pointer"
+                      >
+                        <Search className="w-4 h-4" />
+                        <span>Launch Live Scanner</span>
+                      </a>
 
-                    <a
-                      href={ctaButtonHref}
-                      onMouseEnter={() => cyberAudio.playHover()}
-                      onClick={(e) => {
-                        cyberAudio.playClick();
-                        handleSmoothScroll(e, ctaButtonHref, onCtaClick);
-                      }}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/10 hover:border-cyan-500/40 py-3 text-xs sm:text-sm font-semibold text-slate-200 hover:text-white transition-all cursor-pointer"
-                    >
-                      <Download className="w-4 h-4 text-cyan-400" />
-                      <span>{ctaButtonText}</span>
-                    </a>
+                      <a
+                        href={ctaButtonHref}
+                        onMouseEnter={() => cyberAudio.playHover()}
+                        onClick={(e) => {
+                          cyberAudio.playClick();
+                          handleSmoothScroll(e, ctaButtonHref, onCtaClick);
+                        }}
+                        className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/10 hover:border-cyan-500/40 py-3 text-xs sm:text-sm font-semibold text-slate-200 hover:text-white transition-all cursor-pointer"
+                      >
+                        <Download className="w-4 h-4 text-cyan-400" />
+                        <span>{ctaButtonText}</span>
+                      </a>
+                    </div>
+
+                    <p className="text-[10px] text-center text-slate-500 font-mono">
+                      Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-white/10">ESC</kbd> or tap anywhere to dismiss
+                    </p>
                   </div>
-
-                  <p className="text-[10px] text-center text-slate-500 font-mono">
-                    Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-white/10">ESC</kbd> or tap anywhere to dismiss
-                  </p>
                 </motion.div>
               </motion.div>
             )}
