@@ -27,6 +27,7 @@ import { FileScanResult } from "@/types";
 import { playScanStartSound, playThreatAlertSound, playHoverBlip } from "@/lib/sound";
 import { AsciiGlitchRipple } from "./ui/AsciiGlitchRipple";
 import { FlipText } from "./ui/FlipText";
+import { CircularProgressIndicator, ScanningStatusBadge } from "./ui/CircularProgressIndicator";
 
 const SAMPLE_PAYLOADS = [
   {
@@ -424,16 +425,16 @@ export function FileScanner() {
           <button
             onClick={handleStartScan}
             disabled={isScanning}
-            className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-sm font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-sm font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 cursor-pointer ${
               isScanning
-                ? "bg-white/10 text-white/40 cursor-not-allowed"
+                ? "bg-cyan-950/80 text-cyan-300 border border-cyan-500/50 shadow-[0_0_25px_rgba(6,182,212,0.35)] cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 text-white shadow-[-4px_4px_0px_0px_#000000] hover:translate-x-0.5 hover:-translate-y-0.5"
             }`}
           >
             {isScanning ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                <span>SCANNING IN PROGRESS...</span>
+                <CircularProgressIndicator size={18} strokeWidth={2.5} isIndeterminate={true} colorClassName="text-cyan-400" />
+                <ScanningStatusBadge label="Scanning..." showPercent={false} />
               </>
             ) : (
               <>

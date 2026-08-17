@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Shield, ShieldAlert, ShieldCheck, Globe, Smartphone, Search, UploadCloud, RefreshCw, AlertTriangle, CheckCircle2, XCircle, FileCode, Lock, Zap, ArrowRight, Sparkles, ChevronRight, Check } from "lucide-react";
+import { Shield, ShieldAlert, ShieldCheck, Globe, Smartphone, Search, UploadCloud, RefreshCw, AlertTriangle, CheckCircle2, XCircle, FileCode, Lock, Zap, ArrowRight, Sparkles, ChevronRight, Check, Play, Activity } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { LiquidText } from "./LiquidText";
 import { cyberAudio } from "../lib/audio";
 import { LiveScannerSkeleton } from "./Skeletons";
+import { CircularProgressIndicator, ScanningStatusBadge } from "./ui/CircularProgressIndicator";
 
 interface ApkSample {
   label: string;
@@ -55,6 +56,7 @@ export function LiveScannerDemo() {
 
   // APK State
   const [isScanningApk, setIsScanningApk] = useState(false);
+  const [apkProgress, setApkProgress] = useState(0);
   const [selectedApkFile, setSelectedApkFile] = useState<string | null>(null);
   const [apkScanResult, setApkScanResult] = useState<any | null>(null);
   const [scanStatusMsg, setScanStatusMsg] = useState<string>("Analyzing package structure...");
@@ -62,6 +64,7 @@ export function LiveScannerDemo() {
   // Link State
   const [inputUrl, setInputUrl] = useState("");
   const [isScanningUrl, setIsScanningUrl] = useState(false);
+  const [urlProgress, setUrlProgress] = useState(0);
   const [urlScanResult, setUrlScanResult] = useState<any | null>(null);
 
   const apkSamples: ApkSample[] = [
@@ -165,7 +168,21 @@ export function LiveScannerDemo() {
     setSelectedApkFile(sample.fileName);
     setIsScanningApk(true);
     setApkScanResult(null);
-    setScanStatusMsg("Querying VirusTotal v3 API & AI Neural Signature Engine...");
+    setApkProgress(12);
+    setScanStatusMsg("Decompiling AndroidManifest.xml & package metadata...");
+
+    const progressInterval = setInterval(() => {
+      setApkProgress((prev) => {
+        if (prev >= 92) return prev;
+        const next = prev + Math.floor(Math.random() * 14 + 10);
+        if (next > 40 && next < 70) {
+          setScanStatusMsg("Querying VirusTotal v3 API & Multi-Engine AV signatures...");
+        } else if (next >= 70) {
+          setScanStatusMsg("Correlating OWASP Mobile Top 10 & MITRE Matrix heuristics...");
+        }
+        return next;
+      });
+    }, 280);
 
     try {
       const res = await fetch("/api/scan/file", {
@@ -179,6 +196,9 @@ export function LiveScannerDemo() {
         }),
       });
       const data = await res.json();
+      clearInterval(progressInterval);
+      setApkProgress(100);
+
       if (data.success && data.result) {
         setApkScanResult(data.result);
         cyberAudio.playSuccess();
@@ -187,10 +207,14 @@ export function LiveScannerDemo() {
         cyberAudio.playSuccess();
       }
     } catch (err) {
+      clearInterval(progressInterval);
+      setApkProgress(100);
       console.warn("Backend scan fallback:", err);
       setApkScanResult(sample.mockResult);
     } finally {
-      setIsScanningApk(false);
+      setTimeout(() => {
+        setIsScanningApk(false);
+      }, 350);
     }
   };
 
@@ -202,7 +226,21 @@ export function LiveScannerDemo() {
     setSelectedApkFile(file.name);
     setIsScanningApk(true);
     setApkScanResult(null);
+    setApkProgress(15);
     setScanStatusMsg("Extracting Manifest, SHA256 Hash & Querying VirusTotal...");
+
+    const progressInterval = setInterval(() => {
+      setApkProgress((prev) => {
+        if (prev >= 90) return prev;
+        const next = prev + Math.floor(Math.random() * 12 + 8);
+        if (next > 45 && next < 75) {
+          setScanStatusMsg("Analyzing DEX bytecode & permission risk vectors...");
+        } else if (next >= 75) {
+          setScanStatusMsg("Evaluating C2 IP indicators & neural safety index...");
+        }
+        return next;
+      });
+    }, 300);
 
     const reader = new FileReader();
     reader.onload = async () => {
@@ -218,17 +256,37 @@ export function LiveScannerDemo() {
           }),
         });
         const data = await res.json();
+        clearInterval(progressInterval);
+        setApkProgress(100);
+
         if (data.success && data.result) {
           setApkScanResult(data.result);
           cyberAudio.playSuccess();
         }
       } catch (err) {
+        clearInterval(progressInterval);
+        setApkProgress(100);
         console.error("Scan error:", err);
       } finally {
-        setIsScanningApk(false);
+        setTimeout(() => {
+          setIsScanningApk(false);
+        }, 350);
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleTriggerApkScan = () => {
+    if (isScanningApk) return;
+    if (selectedApkFile) {
+      const match = apkSamples.find((s) => s.fileName === selectedApkFile);
+      if (match) {
+        handleSelectApkSample(match);
+        return;
+      }
+    }
+    // Default to first sample
+    handleSelectApkSample(apkSamples[0]);
   };
 
   const handleScanUrl = async (targetUrlOverride?: string) => {
@@ -238,7 +296,19 @@ export function LiveScannerDemo() {
     cyberAudio.playScanEngage();
     setIsScanningUrl(true);
     setUrlScanResult(null);
+    setUrlProgress(14);
     setScanStatusMsg("Scanning URL via VirusTotal v3 & Domain Phishing Heuristics...");
+
+    const progressInterval = setInterval(() => {
+      setUrlProgress((prev) => {
+        if (prev >= 92) return prev;
+        const next = prev + Math.floor(Math.random() * 15 + 10);
+        if (next > 50) {
+          setScanStatusMsg("Validating SSL cert, typosquatting & reputation feeds...");
+        }
+        return next;
+      });
+    }, 250);
 
     try {
       const res = await fetch("/api/scan/url", {
@@ -247,14 +317,21 @@ export function LiveScannerDemo() {
         body: JSON.stringify({ url: urlToTest }),
       });
       const data = await res.json();
+      clearInterval(progressInterval);
+      setUrlProgress(100);
+
       if (data.success && data.result) {
         setUrlScanResult(data.result);
         cyberAudio.playSuccess();
       }
     } catch (err) {
+      clearInterval(progressInterval);
+      setUrlProgress(100);
       console.error("URL scan error:", err);
     } finally {
-      setIsScanningUrl(false);
+      setTimeout(() => {
+        setIsScanningUrl(false);
+      }, 350);
     }
   };
 
@@ -436,22 +513,116 @@ export function LiveScannerDemo() {
                 </div>
               </div>
 
-              {/* Loading State */}
-              {isScanningApk && (
-                <div className="mt-8 p-6 rounded-2xl bg-blue-950/30 border border-blue-500/30 text-center space-y-3">
-                  <RefreshCw className="w-7 h-7 text-blue-400 animate-spin mx-auto" />
-                  <div className="text-sm font-bold text-white font-mono">
-                    UNPACKING APK PERMISSIONS &amp; NEURAL HEURISTICS...
-                  </div>
-                  <p className="text-xs text-slate-400 font-mono">
-                    Decompiling AndroidManifest.xml • Checking C2 IP Signatures • Evaluating Risk Index
-                  </p>
-                </div>
-              )}
+              {/* AnimatePresence for smooth State Shift between Idle Config vs Analyzing Monitor */}
+              <AnimatePresence mode="wait">
+                {isScanningApk ? (
+                  /* ANALYZING STATE VIEW */
+                  <motion.div
+                    key="apk-scanning-active"
+                    initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="mt-6 p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-blue-950/40 via-[#0a101f] to-black/80 border border-cyan-500/30 text-center space-y-5 shadow-[0_0_35px_rgba(6,182,212,0.2)]"
+                  >
+                    <div className="flex flex-col items-center justify-center gap-3.5">
+                      <div className="relative p-2">
+                        <CircularProgressIndicator
+                          size={76}
+                          strokeWidth={4.5}
+                          progress={apkProgress}
+                          colorClassName="text-cyan-400"
+                          trackColorClassName="text-white/10"
+                          showPing={true}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-sm font-mono font-bold text-cyan-300">
+                            {Math.round(apkProgress)}%
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-base sm:text-lg font-bold text-white font-mono flex items-center justify-center gap-2.5">
+                        <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+                        <ScanningStatusBadge label="Analyzing APK Threat Vectors..." progress={apkProgress} showPercent={false} />
+                      </div>
+
+                      <motion.div
+                        key={scanStatusMsg}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-xs font-mono text-cyan-300/90 bg-cyan-950/60 px-4 py-2 rounded-xl border border-cyan-500/30 max-w-xl shadow-inner"
+                      >
+                        {scanStatusMsg}
+                      </motion.div>
+
+                      {/* Progress Bar Line */}
+                      <div className="w-full max-w-md bg-black/60 rounded-full h-1.5 p-0.5 border border-white/10 overflow-hidden mt-1">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400"
+                          style={{ width: `${Math.min(100, apkProgress)}%` }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      </div>
+
+                      <p className="text-[11px] text-slate-400 font-mono max-w-md">
+                        Decompiling AndroidManifest.xml • Checking C2 IP Signatures • Correlating OWASP Mobile Top 10
+                      </p>
+                    </div>
+                  </motion.div>
+                ) : (
+                  /* IDLE / READY STATE VIEW */
+                  <motion.div
+                    key="apk-idle-config"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10, filter: "blur(3px)" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  >
+                    {/* Action Launch Bar with Live Scanner Trigger & Status */}
+                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-black/40 border border-white/10">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-cyan-400">
+                          <Activity className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-mono font-bold text-white flex items-center gap-2">
+                            <span>Target: {selectedApkFile || "SBI_Quick_KYC_Verification_v2.apk"}</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-cyan-300 font-mono">
+                              READY FOR THREAT SCAN
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-400 font-mono">
+                            Real-time APK decompile, SHA-256 signature match &amp; OWASP check
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onMouseEnter={() => cyberAudio.playHover()}
+                        onClick={handleTriggerApkScan}
+                        disabled={isScanningApk}
+                        className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:shadow-[0_0_35px_rgba(37,99,235,0.6)]"
+                      >
+                        <ShieldAlert className="w-4 h-4" />
+                        <span>Launch Threat Scan</span>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* APK Results View */}
-              {apkScanResult && !isScanningApk && (
-                <div className="mt-8 pt-8 border-t border-white/10 space-y-6">
+              <AnimatePresence>
+                {apkScanResult && !isScanningApk && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.45, ease: "easeOut" }}
+                    className="mt-8 pt-8 border-t border-white/10 space-y-6"
+                  >
                   {/* Verdict Banner */}
                   <div
                     className={`p-6 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ${
@@ -660,8 +831,9 @@ export function LiveScannerDemo() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </div>
           ) : (
             /* LINK SCANNER TAB */
@@ -692,45 +864,111 @@ export function LiveScannerDemo() {
                 </div>
               </div>
 
-              {/* URL Input Bar */}
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="relative flex-1 w-full">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-blue-400">
-                    <Search className="w-5 h-5" />
-                  </div>
-                  <input
-                    type="text"
-                    value={inputUrl}
-                    onChange={(e) => setInputUrl(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleScanUrl()}
-                    placeholder="https://secure-login-update.com/verify or paste SMS link..."
-                    className="w-full pl-11 pr-4 py-4 rounded-xl bg-black border border-white/15 focus:border-blue-500 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none shadow-inner"
-                  />
-                </div>
+              {/* AnimatePresence for smooth State Shift between URL Config vs Analyzing Monitor */}
+              <AnimatePresence mode="wait">
+                {isScanningUrl ? (
+                  /* ANALYZING URL STATE VIEW */
+                  <motion.div
+                    key="url-scanning-active"
+                    initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="mt-6 p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-blue-950/40 via-[#0a101f] to-black/80 border border-cyan-500/30 text-center space-y-5 shadow-[0_0_35px_rgba(6,182,212,0.2)]"
+                  >
+                    <div className="flex flex-col items-center justify-center gap-3.5">
+                      <div className="relative p-2">
+                        <CircularProgressIndicator
+                          size={76}
+                          strokeWidth={4.5}
+                          progress={urlProgress}
+                          colorClassName="text-cyan-400"
+                          trackColorClassName="text-white/10"
+                          showPing={true}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-sm font-mono font-bold text-cyan-300">
+                            {Math.round(urlProgress)}%
+                          </span>
+                        </div>
+                      </div>
 
-                <button
-                  onMouseEnter={() => cyberAudio.playHover()}
-                  onClick={() => handleScanUrl()}
-                  disabled={isScanningUrl}
-                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shrink-0 transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] cursor-pointer"
-                >
-                  {isScanningUrl ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>ANALYZING URL...</span>
-                    </>
-                  ) : (
-                    <>
+                      <div className="text-base sm:text-lg font-bold text-white font-mono flex items-center justify-center gap-2.5">
+                        <span className="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+                        <ScanningStatusBadge label="Analyzing Domain Threat Vectors..." progress={urlProgress} showPercent={false} />
+                      </div>
+
+                      <motion.div
+                        key={scanStatusMsg}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-xs font-mono text-cyan-300/90 bg-cyan-950/60 px-4 py-2 rounded-xl border border-cyan-500/30 max-w-xl shadow-inner"
+                      >
+                        {scanStatusMsg}
+                      </motion.div>
+
+                      {/* Progress Bar Line */}
+                      <div className="w-full max-w-md bg-black/60 rounded-full h-1.5 p-0.5 border border-white/10 overflow-hidden mt-1">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400"
+                          style={{ width: `${Math.min(100, urlProgress)}%` }}
+                          transition={{ duration: 0.2 }}
+                        />
+                      </div>
+
+                      <p className="text-[11px] text-slate-400 font-mono max-w-md">
+                        Querying 90+ VirusTotal Threat Feeds • Inspecting SSL Certificates &amp; Typosquatting
+                      </p>
+                    </div>
+                  </motion.div>
+                ) : (
+                  /* IDLE / URL INPUT VIEW */
+                  <motion.div
+                    key="url-idle-config"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10, filter: "blur(3px)" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="flex flex-col sm:flex-row items-center gap-3"
+                  >
+                    <div className="relative flex-1 w-full">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-blue-400">
+                        <Search className="w-5 h-5" />
+                      </div>
+                      <input
+                        type="text"
+                        value={inputUrl}
+                        onChange={(e) => setInputUrl(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleScanUrl()}
+                        placeholder="https://secure-login-update.com/verify or paste SMS link..."
+                        className="w-full pl-11 pr-4 py-4 rounded-xl bg-black border border-white/15 focus:border-blue-500 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none shadow-inner"
+                      />
+                    </div>
+
+                    <button
+                      onMouseEnter={() => cyberAudio.playHover()}
+                      onClick={() => handleScanUrl()}
+                      disabled={isScanningUrl}
+                      className="w-full sm:w-auto px-8 py-4 rounded-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 shrink-0 transition-all cursor-pointer shadow-lg bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_25px_rgba(37,99,235,0.4)]"
+                    >
                       <ShieldAlert className="w-4 h-4" />
                       <span>SCAN LINK INTEL</span>
-                    </>
-                  )}
-                </button>
-              </div>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Link Scan Result */}
-              {urlScanResult && !isScanningUrl && (
-                <div className="mt-8 pt-8 border-t border-white/10 space-y-6">
+              <AnimatePresence>
+                {urlScanResult && !isScanningUrl && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.45, ease: "easeOut" }}
+                    className="mt-8 pt-8 border-t border-white/10 space-y-6"
+                  >
                   <div
                     className={`p-6 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-6 ${
                       urlScanResult.reputationScore > 60
@@ -869,8 +1107,9 @@ export function LiveScannerDemo() {
                       ))}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </div>
           )}
         </motion.div>

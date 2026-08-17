@@ -2,6 +2,7 @@
 
 import React, { Suspense } from "react";
 import { ResponsiveHeroBanner } from "./components/ui/responsive-hero-banner";
+import { ScrollProgressBar } from "./components/ui/ScrollProgressBar";
 import { CyberBackground } from "./components/CyberBackground";
 import { CyberCursorFollower } from "./components/CyberCursorFollower";
 import { CyberLoadingFallback } from "./components/CyberLoadingFallback";
@@ -58,6 +59,9 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#070b14] text-white selection:bg-blue-500/30 selection:text-blue-200 font-sans antialiased">
+      {/* Top Window Scroll Progress Bar */}
+      <ScrollProgressBar />
+
       {/* Subtle, non-intrusive cyber data bit cursor follow effect */}
       <CyberCursorFollower />
 
